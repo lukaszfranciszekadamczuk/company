@@ -1,12 +1,21 @@
 package tech.lideo.company.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import java.time.LocalDate;
 
 public class Employee {
-
+    @JsonProperty("id")
     private Long id;
+    @JsonProperty("firstName")
     private String firstName;
+    @JsonProperty("lastName")
     private String lastName;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonProperty("created")
     private LocalDate created;
 
     public Employee() {
@@ -43,7 +52,18 @@ public class Employee {
         this.lastName = lastName;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getCreated() {
         return created;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", created=" + created +
+                '}';
     }
 }
