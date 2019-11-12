@@ -4,12 +4,14 @@ import org.springframework.stereotype.Repository;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.repository.exceptions.EmployeeAlreadyExistsException;
 import tech.lideo.company.repository.exceptions.EmployeeNotFoundException;
+import tech.lideo.company.repository.exceptions.NoEmployeesException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Repository
 public class ArrayListEmployeeRepository implements EmployeeRepository {
@@ -17,8 +19,33 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     private List<Employee> employeeList = new ArrayList<>();
 
     @Override
-    public Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException {
-        if (isNull(employee.getId()) || isNull(employee.getFirstName()) || isNull(employee.getLastName())) {
+    public List<Employee> findAll() {
+        if (employeeList.isEmpty()) {
+            throw new NoEmployeesException();
+        }
+
+        return employeeList;
+    }
+
+    @Override
+    public List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException {
+        if (isNull(firstName) && isNull(lastName)) {
+            throw new IllegalArgumentException();
+        }
+
+        List<Employee> searchedEmployees = employeeList.stream()
+                .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
+                .collect(Collectors.toList());
+        if (searchedEmployees.isEmpty()) {
+            throw new EmployeeNotFoundException();
+        }
+
+        return searchedEmployees;
+    }
+
+    @Override
+    public String create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException {
+        if (isNull(employee.getFirstName()) || isNull(employee.getLastName())) {
             throw new IllegalArgumentException();
         }
 
@@ -31,52 +58,68 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
 
         employeeList.add(employee);
 
-        return employeeList.stream()
-                .findFirst()
-                .filter(e -> e.getId().equals(employee.getId()))
-                .orElseThrow(EmployeeNotFoundException::new);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        if (isNull(id)) {
-            throw new IllegalArgumentException();
-        }
-
-        return employeeList.removeIf(e -> e.getId().equals(id));
-    }
-
-    @Override
-    public Employee find(Long id) throws EmployeeNotFoundException {
-        return employeeList.stream()
-                .filter(e -> e.getId().equals(id))
+        return "Created employee: " + employeeList.stream()
+                .filter(e -> e.getFirstName().equals(employee.getFirstName()))
+                .filter(e -> e.getLastName().equals(employee.getLastName()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
     }
 
     @Override
-    public Employee update(Employee newEmployeeData) throws EmployeeNotFoundException {
-        if (isNull(newEmployeeData.getId()) && isNull(newEmployeeData.getFirstName()) && isNull(newEmployeeData.getLastName())) {
+    public String delete(String firstName, String lastName) throws EmployeeNotFoundException {
+        if (isNull(firstName) || isNull(lastName)) {
             throw new IllegalArgumentException();
         }
 
-        boolean employeeExists = employeeList.stream()
-                .anyMatch(e -> e.getId().equals(newEmployeeData.getId()));
+        Employee employeeToDelete = employeeList.stream()
+                .filter(e -> e.getFirstName().equals(firstName))
+                .filter(e -> e.getLastName().equals(lastName))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
 
-        if (!employeeExists) {
+        employeeList.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
+
+        return "Deleted employee: " + employeeToDelete;
+    }
+
+    @Override
+    public String update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException {
+        if (isNull(firstName) && isNull(lastName)) {
+            throw new IllegalArgumentException();
+        }
+
+        Employee employeeToUpdate = employeeList.stream()
+                .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        boolean isEmployeeDeleted = employeeList.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
+
+        if (!isEmployeeDeleted) {
             throw new EmployeeNotFoundException();
         }
 
-        Employee employeeToUpdate = employeeList.stream().filter(e -> e.getId().equals(newEmployeeData.getId())).collect(Collectors.toList()).get(0);
-        employeeList.removeIf(e -> e.getId().equals(newEmployeeData.getId()));
-        employeeToUpdate.setFirstName(newEmployeeData.getFirstName());
-        employeeToUpdate.setLastName(newEmployeeData.getLastName());
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(employeeToUpdate.getId());
+        if (nonNull(newFirstName)) {
+            updatedEmployee.setFirstName(newFirstName);
+        } else {
+            updatedEmployee.setFirstName(employeeToUpdate.getFirstName());
+        }
+        if (nonNull(newLastName)) {
+            updatedEmployee.setLastName(newLastName);
+        } else {
+            updatedEmployee.setLastName(employeeToUpdate.getLastName());
+        }
+        updatedEmployee.setCreated(employeeToUpdate.getCreated());
 
-        employeeList.add(employeeToUpdate);
+        employeeList.add(updatedEmployee);
 
-        return employeeList.stream()
-                .filter(e -> e.getId().equals(newEmployeeData.getId()))
+        Employee updatedEmployeeResult = employeeList.stream()
+                .filter(e -> e.getFirstName().equals(newFirstName) && e.getLastName().equals(newLastName))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
+
+        return "Updated employee: " + employeeToUpdate + " to: " + updatedEmployeeResult;
     }
 }

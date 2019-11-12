@@ -2,38 +2,45 @@ package tech.lideo.company.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Employee {
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
     @JsonProperty("firstName")
     private String firstName;
     @JsonProperty("lastName")
     private String lastName;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     @JsonProperty("created")
+    @DateTimeFormat()
     private LocalDate created;
 
     public Employee() {
     }
 
-    public Employee(Long id, String firstName, String lastName) {
-        this.id = id;
+    public Employee(String firstName, String lastName) {
+        this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
         this.created = LocalDate.now();
     }
 
-    public Long getId() {
-        return id;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public UUID getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -55,6 +62,10 @@ public class Employee {
     @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getCreated() {
         return created;
+    }
+
+    public void setCreated(LocalDate created) {
+        this.created = created;
     }
 
     @Override

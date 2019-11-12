@@ -5,6 +5,7 @@ import tech.lideo.company.repository.exceptions.EmployeeAlreadyExistsException;
 import tech.lideo.company.repository.exceptions.EmployeeNotFoundException;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface EmployeeRepository {
 
@@ -12,11 +13,13 @@ public interface EmployeeRepository {
      *
      */
 
-    Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IOException;
+    List<Employee> findAll();
 
-    boolean delete(Long id) throws EmployeeNotFoundException;
+    List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException;
 
-    Employee find(Long id) throws EmployeeNotFoundException;
+    String create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IOException;
 
-    Employee update(Employee employee) throws EmployeeNotFoundException;
+    String delete(String firstName, String lastName) throws EmployeeNotFoundException;
+
+    String update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException;
 }
