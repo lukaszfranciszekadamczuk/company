@@ -27,7 +27,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException {
+    public List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException, IllegalArgumentException {
         if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
@@ -45,8 +45,8 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException {
-        if (isNull(employee.getFirstName()) || isNull(employee.getLastName())) {
+    public Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException {
+        if (isNull(employee.getFirstName()) && isNull(employee.getLastName())) {
             throw new IllegalArgumentException();
         }
 
@@ -68,7 +68,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public String delete(String firstName, String lastName) throws EmployeeNotFoundException {
+    public String delete(String firstName, String lastName) throws EmployeeNotFoundException, IllegalArgumentException {
         if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
@@ -85,11 +85,11 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public Employee update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException {
+    public Employee update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException, IllegalArgumentException {
         if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
-        if (isNull(newFirstName) && isNull(newLastName)) {
+        if (isNull(newFirstName) || isNull(newLastName)) {
             throw new IllegalArgumentException();
         }
 
