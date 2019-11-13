@@ -16,14 +16,14 @@ import static java.util.Objects.nonNull;
 @Repository
 public class ArrayListEmployeeRepository implements EmployeeRepository {
 
-    private List<Employee> employeeList = new ArrayList<>();
+    private List<Employee> employees = new ArrayList<>();
 
     @Override
-    public List<Employee> findAll() {
-        if (employeeList.isEmpty()) {
+    public List<Employee> findAll() throws NoEmployeesException {
+        if (employees.isEmpty()) {
             throw new NoEmployeesException();
         }
-        return employeeList;
+        return employees;
     }
 
     @Override
@@ -32,9 +32,11 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
             throw new IllegalArgumentException();
         }
 
-        List<Employee> searchedEmployees = employeeList.stream()
-                .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
+        List<Employee> searchedEmployees = employees.stream()
+                .filter(e -> e.getFirstName().equals(firstName))
+                .filter(e -> e.getLastName().equals(lastName))
                 .collect(Collectors.toList());
+
         if (searchedEmployees.isEmpty()) {
             throw new EmployeeNotFoundException();
         }
@@ -43,21 +45,21 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
-    public String create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException {
+    public Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException {
         if (isNull(employee.getFirstName()) || isNull(employee.getLastName())) {
             throw new IllegalArgumentException();
         }
 
-        boolean employeeExists = employeeList.stream()
+        boolean employeeExists = employees.stream()
                 .anyMatch(e -> e.getId().equals(employee.getId()));
 
         if (employeeExists) {
             throw new EmployeeAlreadyExistsException();
         }
 
-        employeeList.add(employee);
+        employees.add(employee);
 
-        return "Created employee: " + employeeList.stream()
+        return employees.stream()
                 .filter(e -> e.getId().equals(employee.getId()))
                 .filter(e -> e.getFirstName().equals(employee.getFirstName()))
                 .filter(e -> e.getLastName().equals(employee.getLastName()))
@@ -71,19 +73,19 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
             throw new IllegalArgumentException();
         }
 
-        Employee employeeToDelete = employeeList.stream()
+        Employee employeeToDelete = employees.stream()
                 .filter(e -> e.getFirstName().equals(firstName))
                 .filter(e -> e.getLastName().equals(lastName))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        employeeList.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
+        employees.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
 
         return "Deleted employee: " + employeeToDelete;
     }
 
     @Override
-    public String update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException {
+    public Employee update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException {
         if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
@@ -91,12 +93,12 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
             throw new IllegalArgumentException();
         }
 
-        Employee employeeToUpdate = employeeList.stream()
+        Employee employeeToUpdate = employees.stream()
                 .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        boolean isEmployeeDeleted = employeeList.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
+        boolean isEmployeeDeleted = employees.removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName));
 
         if (!isEmployeeDeleted) {
             throw new EmployeeNotFoundException();
@@ -116,13 +118,13 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
         }
         updatedEmployee.setCreated(employeeToUpdate.getCreated());
 
-        employeeList.add(updatedEmployee);
+        employees.add(updatedEmployee);
 
-        Employee updatedEmployeeResult = employeeList.stream()
-                .filter(e -> e.getFirstName().equals(updatedEmployee.getFirstName()) && e.getLastName().equals(updatedEmployee.getLastName()))
+        return employees.stream()
+                .filter(e -> e.getId().equals(employeeToUpdate.getId()))
+                .filter(e -> e.getFirstName().equals(updatedEmployee.getFirstName()))
+                .filter(e -> e.getLastName().equals(updatedEmployee.getLastName()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
-
-        return "Updated employee: " + employeeToUpdate + " to: " + updatedEmployeeResult;
     }
 }
