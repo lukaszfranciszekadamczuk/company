@@ -1,5 +1,8 @@
 package tech.lideo.company.repository;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.repository.exceptions.EmployeeAlreadyExistsException;
 import tech.lideo.company.repository.exceptions.EmployeeNotFoundException;
@@ -13,17 +16,33 @@ public class ArrayListEmployeeRepositoryTest {
 
     private ArrayListEmployeeRepository arrayListEmployeeRepository;
 
-    @org.junit.Before
+    @Before
     public void setUp() {
         arrayListEmployeeRepository = new ArrayListEmployeeRepository();
     }
 
-    @org.junit.After
+    @After
     public void tearDown() {
     }
 
-    @org.junit.Test
-    public void should_return_true_after_create_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+    @Test
+    public void should_return_employee_list() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employeeOne = new Employee("Jan", "Kowalski");
+        Employee employeeTwo = new Employee("Marek", "Nowak");
+
+        //when
+        arrayListEmployeeRepository.create(employeeOne);
+        arrayListEmployeeRepository.create(employeeTwo);
+
+        //then
+        assertEquals(2, arrayListEmployeeRepository.findAll().size());
+        assertEquals(employeeOne.getId(), arrayListEmployeeRepository.findAll().get(0).getId());
+        assertEquals(employeeTwo.getId(), arrayListEmployeeRepository.findAll().get(1).getId());
+    }
+
+    @Test
+    public void should_create_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
         //given
         Employee employee = new Employee("Jan", "Kowalski");
 
@@ -31,122 +50,151 @@ public class ArrayListEmployeeRepositoryTest {
         String createEmployee = arrayListEmployeeRepository.create(employee);
 
         //then
-//        assertEquals({"id=" + employee.getId() + ", firstName=" + employee.getFirstName() + ", lastName=" + employee.getLastName() + ", created =" + employee.getCreated()}, createEmployee);
-
-
+        assertEquals("Created employee: " + "Employee{" +
+                "id=" + employee.getId() +
+                ", firstName='" + employee.getFirstName() + '\'' +
+                ", lastName='" + employee.getLastName() + '\'' +
+                ", created=" + employee.getCreated() +
+                '}', createEmployee);
     }
 
-        @org.junit.Test
-        public void should_return_exception_after_add_employee_with_the_same_id () throws
-        EmployeeNotFoundException, EmployeeAlreadyExistsException {
-            //given
-            Employee employee = new Employee("Jan", "Kowalski");
+    @Test
+    public void should_return_exception_after_add_employee_with_the_same_id() throws
+            EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Jan", "Kowalski");
 
-            //when
+        //when
+        arrayListEmployeeRepository.create(employee);
+
+        //then
+        assertThrows(EmployeeAlreadyExistsException.class, () -> {
             arrayListEmployeeRepository.create(employee);
-
-            //then
-            assertThrows(EmployeeAlreadyExistsException.class, () -> {
-                arrayListEmployeeRepository.create(employee);
-            });
-        }
-
-        @org.junit.Test
-        public void should_return_exception_after_add_employee_without_required_argument () {
-            //given
-            Employee employee = new Employee(null, "Kowalski");
-
-            //then
-            assertThrows(IllegalArgumentException.class, () -> {
-                arrayListEmployeeRepository.create(employee);
-            });
-        }
-
-        @org.junit.Test
-        public void should_delete_employee () throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
-            //given
-            Employee employee = new Employee("Jan", "Kowalski");
-            String employeeString = "Employee{" +
-                    "id=" + employee.getId() +
-                    ", firstName='" + "Jan" + '\'' +
-                    ", lastName='" + "Kowalski" + '\'' +
-                    ", created=" + employee.getCreated() +
-                    '}';
-            arrayListEmployeeRepository.create(employee);
-
-            //when
-            String isDeleted = arrayListEmployeeRepository.delete("Jan", "Kowalski");
-
-            //then
-//            assertEquals(employeeString, isDeleted);
-        }
-
-        @org.junit.Test
-        public void should_return_exception_after_delete_employee_with_no_exists_data () {
-            //given
-            Employee employee = new Employee("Jan", "Kowalski");
-
-            //then
-            assertThrows(EmployeeNotFoundException.class, () ->
-                    arrayListEmployeeRepository.delete("Tadeusz", "Nowak"));
-        }
-
-        @org.junit.Test
-        public void should_find_employee () throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
-            //given
-            Employee employee = new Employee("Henryk", "Sienkiewicz");
-            arrayListEmployeeRepository.create(employee);
-
-            //when
-            List<Employee> foundEmployee = arrayListEmployeeRepository.find("Henryk", "Sienkiewicz");
-
-            //then
-            assertEquals(employee, foundEmployee.get(0));
-        }
-
-        @org.junit.Test
-        public void should_return_exception_after_search_employee_with_no_exists_data () throws
-        EmployeeNotFoundException, EmployeeAlreadyExistsException {
-            //given
-            Employee employee = new Employee("Kaczor", "Donald");
-            arrayListEmployeeRepository.create(employee);
-
-            //then
-            assertThrows(EmployeeNotFoundException.class, () ->
-                    arrayListEmployeeRepository.find("Papa", "Smerf"));
-        }
-
-        @org.junit.Test
-        public void should_return_true_after_update_employee () throws
-        EmployeeNotFoundException, EmployeeAlreadyExistsException {
-//            //given
-//            Employee employee = new Employee("Jerry", "Łopata");
-//            String newLastName = "Shovel";
-//            arrayListEmployeeRepository.create(employee);
-//            Employee updatedEmployee = new Employee();
-//            updatedEmployee.setId(employee.getId());
-//            updatedEmployee.setFirstName(employee.getFirstName());
-//            updatedEmployee.setLastName(newLastName);
-//            updatedEmployee.setCreated(employee.getCreated());
-//
-//            //when
-//            String updateEmployee = arrayListEmployeeRepository.update("Jerry", "Łopata", null, newLastName);
-//
-//            then
-//            assertEquals("Updated employee: " + employee + " to: " + updatedEmployee, updateEmployee);
-        }
-
-        @org.junit.Test
-        public void should_return_exception_after_update_employee_with_no_exists_data () throws
-        EmployeeNotFoundException, EmployeeAlreadyExistsException {
-            //given
-            Employee employee = new Employee("Petru", "Swetru");
-            String firstName = "Karabasz";
-            String lastName = "Barabasz";
-            arrayListEmployeeRepository.create(employee);
-
-            //then
-            assertThrows(EmployeeNotFoundException.class, () ->
-                    arrayListEmployeeRepository.update(firstName, lastName, "Miś", "Uszatek"));
-        }
+        });
     }
+
+    @Test
+    public void should_return_exception_after_add_employee_without_required_argument() {
+        //given
+        Employee employee = new Employee(null, "Kowalski");
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> {
+            arrayListEmployeeRepository.create(employee);
+        });
+    }
+
+    @Test
+    public void should_delete_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Jan", "Kowalski");
+        arrayListEmployeeRepository.create(employee);
+
+        //when
+        String deletedEmployee = arrayListEmployeeRepository.delete("Jan", "Kowalski");
+
+        //then
+        assertEquals("Deleted employee: " + "Employee{" +
+                "id=" + employee.getId() +
+                ", firstName='" + employee.getFirstName() + '\'' +
+                ", lastName='" + employee.getLastName() + '\'' +
+                ", created=" + employee.getCreated() +
+                '}', deletedEmployee);
+    }
+
+    @Test
+    public void should_return_exception_after_delete_employee_with_no_exists_data() throws
+            EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Jan", "Kowalski");
+        arrayListEmployeeRepository.create(employee);
+
+        //then
+        assertThrows(EmployeeNotFoundException.class, () ->
+                arrayListEmployeeRepository.delete("Tadeusz", "Nowak"));
+    }
+
+    @Test
+    public void should_find_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Henryk", "Sienkiewicz");
+        arrayListEmployeeRepository.create(employee);
+
+        //when
+        List<Employee> foundEmployee = arrayListEmployeeRepository.find("Henryk", "Sienkiewicz");
+
+        //then
+        assertEquals(employee, foundEmployee.stream()
+                .filter(e -> e.getFirstName().equals(employee.getFirstName()) &&
+                        e.getLastName().equals(employee.getLastName()))
+                .findFirst()
+                .get()
+        );
+    }
+
+    @Test
+    public void should_return_exception_after_search_employee_with_no_exists_data() throws
+            EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Kaczor", "Donald");
+        arrayListEmployeeRepository.create(employee);
+
+        //then
+        assertThrows(EmployeeNotFoundException.class, () ->
+                arrayListEmployeeRepository.find("Papa", "Smerf"));
+    }
+
+    @Test
+    public void should_update_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Jerry", "Łopata");
+        String newLastName = "Shovel";
+        arrayListEmployeeRepository.create(employee);
+
+        //when
+        String updateEmployee = arrayListEmployeeRepository
+                .update(employee.getFirstName(), employee.getLastName(), null, newLastName);
+
+        //then
+        assertEquals("Updated employee: " + "Employee{" +
+                        "id=" + employee.getId() +
+                        ", firstName='" + employee.getFirstName() + '\'' +
+                        ", lastName='" + employee.getLastName() + '\'' +
+                        ", created=" + employee.getCreated() +
+                        '}'
+                        + " to: " + "Employee{" +
+                        "id=" + employee.getId() +
+                        ", firstName='" + employee.getFirstName() + '\'' +
+                        ", lastName='" + newLastName + '\'' +
+                        ", created=" + employee.getCreated() +
+                        '}',
+                updateEmployee);
+    }
+
+    @Test
+    public void should_return_exception_after_update_employee_with_no_exists_data() throws
+            EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Petru", "Swetru");
+        String firstName = "Karabasz";
+        String lastName = "Barabasz";
+        arrayListEmployeeRepository.create(employee);
+
+        //then
+        assertThrows(EmployeeNotFoundException.class, () ->
+                arrayListEmployeeRepository.update(firstName, lastName, "Miś", "Uszatek"));
+    }
+
+    @Test
+    public void should_return_exception_after_update_employee_with_illegal_argument() throws
+            EmployeeNotFoundException, EmployeeAlreadyExistsException {
+        //given
+        Employee employee = new Employee("Petru", "Swetru");
+        arrayListEmployeeRepository.create(employee);
+
+        //then
+        assertThrows(IllegalArgumentException.class, () ->
+                arrayListEmployeeRepository
+                        .update(employee.getFirstName(), employee.getLastName(), null, null));
+    }
+}

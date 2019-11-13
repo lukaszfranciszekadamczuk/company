@@ -23,7 +23,6 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
         if (employeeList.isEmpty()) {
             throw new NoEmployeesException();
         }
-
         return employeeList;
     }
 
@@ -59,6 +58,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
         employeeList.add(employee);
 
         return "Created employee: " + employeeList.stream()
+                .filter(e -> e.getId().equals(employee.getId()))
                 .filter(e -> e.getFirstName().equals(employee.getFirstName()))
                 .filter(e -> e.getLastName().equals(employee.getLastName()))
                 .findFirst()
@@ -67,7 +67,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
 
     @Override
     public String delete(String firstName, String lastName) throws EmployeeNotFoundException {
-        if (isNull(firstName) || isNull(lastName)) {
+        if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
 
@@ -85,6 +85,9 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
     @Override
     public String update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException {
         if (isNull(firstName) && isNull(lastName)) {
+            throw new IllegalArgumentException();
+        }
+        if (isNull(newFirstName) && isNull(newLastName)) {
             throw new IllegalArgumentException();
         }
 
@@ -116,7 +119,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
         employeeList.add(updatedEmployee);
 
         Employee updatedEmployeeResult = employeeList.stream()
-                .filter(e -> e.getFirstName().equals(newFirstName) && e.getLastName().equals(newLastName))
+                .filter(e -> e.getFirstName().equals(updatedEmployee.getFirstName()) && e.getLastName().equals(updatedEmployee.getLastName()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
 
