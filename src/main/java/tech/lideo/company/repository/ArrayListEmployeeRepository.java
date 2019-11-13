@@ -46,7 +46,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
 
     @Override
     public Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException {
-        if (isNull(employee.getFirstName()) && isNull(employee.getLastName())) {
+        if (isNull(employee.getFirstName()) || isNull(employee.getLastName())) {
             throw new IllegalArgumentException();
         }
 
@@ -89,7 +89,7 @@ public class ArrayListEmployeeRepository implements EmployeeRepository {
         if (isNull(firstName) && isNull(lastName)) {
             throw new IllegalArgumentException();
         }
-        if (isNull(newFirstName) || isNull(newLastName)) {
+        if (isNull(newFirstName) && isNull(newLastName)) {
             throw new IllegalArgumentException();
         }
 
