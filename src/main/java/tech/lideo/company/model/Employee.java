@@ -1,10 +1,11 @@
 package tech.lideo.company.model;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Employee {
 
-    private Long id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private LocalDate created;
@@ -12,18 +13,18 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Long id, String firstName, String lastName) {
-        this.id = id;
+    public Employee(String firstName, String lastName) {
+        this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
         this.created = LocalDate.now();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
