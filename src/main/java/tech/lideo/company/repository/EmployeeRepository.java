@@ -1,21 +1,135 @@
 package tech.lideo.company.repository;
 
+import org.springframework.stereotype.Repository;
 import tech.lideo.company.model.Employee;
+import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
+import tech.lideo.company.repository.exception.EmployeeNotFoundException;
+import tech.lideo.company.repository.exception.EmployeePeselException;
+import tech.lideo.company.repository.exception.MissingReqiredUpdateArgumentsException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface EmployeeRepository {
+import static java.util.Objects.isNull;
 
-    /**
-     *
-     */
-    List<Employee> findAll() throws NoEmployeesException;
+@Repository
+public class EmployeeRepository implements IEmployeeRepository {
 
-    Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException;
+    private List<Employee> employeeList = new ArrayList<>();
+    private String firstName;
+    private String lastName;
+    private String pesel;
 
-    boolean delete(String firstName, String lastName) throws EmployeeNotFoundException;
+    @Override
+    public List<Employee> findAll() {
+        return employeeList;
+    }
 
-    List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException;
+    @Override
+    public Employee create(Employee employee)
+            throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException {
+        if (isNull(employee.getFirstName()) || isNull(employee.getLastName()) || isNull(employee.getPesel()))
+            throw new IllegalArgumentException(
+                    "All employee data are required");
 
-    Employee update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException;
+        if (employee.getPesel().length() != 11)
+            throw new EmployeePeselException(
+                    "Employee pesel should have 11 characters"
+            );
+
+        boolean isEmployeeExist = employeeList.stream()
+                .anyMatch(e -> e.getPesel().equals(employee.getPesel()));
+
+        if (isEmployeeExist)
+            throw new EmployeeAlreadyExistsException();
+
+        employeeList.add(employee);
+
+        return employeeList.stream()
+                .filter(e -> e.getId().equals(employee.getId()))
+                .filter(e -> e.getFirstName().equals(employee.getFirstName()))
+                .filter(e -> e.getLastName().equals(employee.getLastName()))
+                .filter(e -> e.getPesel().equals(employee.getPesel()))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    @Override
+    public boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+        if (isNull(firstName) || isNull(lastName) || isNull(pesel))
+            throw new IllegalArgumentException(
+                    "All employee data are required");
+
+        employeeList.stream()
+                .filter(e -> e.getFirstName().equals(firstName))
+                .filter(e -> e.getLastName().equals(lastName))
+                .filter(e -> e.getPesel().equals(pesel))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        return employeeList
+                .removeIf(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName) && e.getPesel().equals(pesel));
+    }
+
+    @Override
+    public Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+        if (isNull(firstName) || isNull(lastName) || isNull(pesel))
+            throw new IllegalArgumentException(
+                    "All employee data are required");
+
+        return employeeList.stream()
+                .filter(e -> e.getFirstName().equals(firstName))
+                .filter(e -> e.getLastName().equals(lastName))
+                .filter(e -> e.getPesel().equals(pesel))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    @Override
+    public Employee update(String actualFirstName, String actualLastName, String actualPesel,
+                           String newFirstName, String newLastName, String newPesel)
+            throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException {
+        if (isNull(actualFirstName) || isNull(actualLastName) || isNull(actualPesel))
+            throw new IllegalArgumentException(
+                    "All employee data are required");
+
+        if (isNull(newFirstName) && isNull(newLastName) && isNull(newPesel))
+            throw new MissingReqiredUpdateArgumentsException(
+                    "Required to provide at least one parameter of the employee being updated");
+
+        Employee employeeToUpdate = employeeList.stream()
+                .filter(e -> e.getFirstName().equals(actualFirstName)
+                        && e.getLastName().equals(actualLastName) && e.getPesel().equals(actualPesel))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        int index = employeeList.indexOf(employeeToUpdate);
+
+        employeeList.removeIf(e -> e.getFirstName().equals(firstName)
+                && e.getLastName().equals(lastName) && e.getPesel().equals(pesel));
+
+        if (isNull(newFirstName))
+            firstName = actualFirstName;
+        else firstName = newFirstName;
+
+        if (isNull(newLastName))
+            lastName = actualLastName;
+        else lastName = newLastName;
+
+        if (isNull(newPesel))
+            pesel = actualPesel;
+        else pesel = newPesel;
+
+        Employee newUpdateEmployee = new Employee(firstName, lastName, pesel);
+
+
+        employeeList.set(index, newUpdateEmployee);
+
+        return employeeList.stream()
+                .filter(e -> e.getFirstName().equals(newUpdateEmployee.getFirstName()))
+                .filter(e -> e.getLastName().equals(newUpdateEmployee.getLastName()))
+                .filter(e -> e.getPesel().equals(newUpdateEmployee.getPesel()))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+    }
 }
