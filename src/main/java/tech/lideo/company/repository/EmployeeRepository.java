@@ -1,85 +1,159 @@
 package tech.lideo.company.repository;
 
+import org.springframework.stereotype.Repository;
 import tech.lideo.company.model.Employee;
-import tech.lideo.company.repository.exceptions.EmployeeAlreadyExistsException;
-import tech.lideo.company.repository.exceptions.EmployeeNotFoundException;
-import tech.lideo.company.repository.exceptions.NoEmployeesException;
+import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
+import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
+import tech.lideo.company.shared.exceptions.NoEmployeesException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A repository that stores Employees.
- * The interface provides 5 methods for working on the repository
- *
- * @author Łukasz Adamczuk
- * @author Paweł Woźny
- */
+import static java.util.Objects.isNull;
 
-public interface EmployeeRepository {
+@Repository
+public class EmployeeRepository implements IEmployeeRepository {
 
-    /**
-     * Returns list of all stored Employees.
-     * If the list is empty throws NoEmployeesException.
-     *
-     * @return <tt>List<Employee></tt> if the list contains any Employees
-     * @throws NoEmployeesException if the list is empty
-     */
-    List<Employee> findAll() throws NoEmployeesException;
+    private List<Employee> employees = new ArrayList<>();
 
-    /**
-     * Returns list of searched by params Employees when given params  <tt>firstName</tt> and <tt>lastName</tt> are valid.
-     * If <tt>firstName==null</tt> and <tt>lastName==null</tt> throws IllegalArgumentException.
-     * If the list doesn't contain Employee with searched params throws EmployeeNotFoundException.
-     *
-     * @param firstName string to search Employee by first name
-     * @param lastName  string to search Employee by last name
-     * @return <tt>List<Employee></tt> if the list contains Employees with searched params
-     * @throws IllegalArgumentException  when searched params are invalid
-     * @throws EmployeeNotFoundException if the list doesn't contain Employees with searched params
-     */
-    List<Employee> find(String firstName, String lastName) throws EmployeeNotFoundException, IllegalArgumentException;
+    @Override
+    public List<Employee> findAll() throws NoEmployeesException {
+        return employees;
+    }
 
-    /**
-     * Returns added Employee when given param <tt>employee</tt> is valid.
-     * If <tt>employee.getFirstName()==null</tt> and <tt>employee.getLastName()==null</tt> throws IllegalArgumentException.
-     * If <tt>employee.getId()</tt> is taken by other element on the list throws EmployeeAlreadyExistsException.
-     * Even if param <tt>employee</tt> is valid there is technical possibility that object cannot by added to list and
-     * when such situation occurs, throws EmployeeNotFoundException.
-     *
-     * @param employee element to be appended to this list
-     * @return <tt>Employee</tt> object added to the list
-     * @throws IllegalArgumentException       when param is invalid
-     * @throws EmployeeNotFoundException      if list doesn't contain added Employee
-     * @throws EmployeeAlreadyExistsException when <tt>employee.getId()</tt> is taken by other element on the list
-     */
-    Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException;
+    @Override
+    public Employee find(Long pesel) throws EmployeeNotFoundException, IllegalArgumentException {
+        validatePesel(pesel);
 
-    /**
-     * Returns string containing deleted Employee attributes when given params <tt>firstName</tt> and <tt>lastName</tt> are valid.
-     * If <tt>employee.getFirstName()==null</tt> and <tt>employee.getLastName()==null</tt> throws IllegalArgumentException.
-     * If the list doesn't contain Employee to be deleted with searched params throws EmployeeNotFoundException.
-     *
-     * @param firstName string to search and delete Employee by first name
-     * @param lastName  string to search and delete Employee by last name
-     * @return <tt>String</tt> containing deleted Employee attributes
-     * @throws IllegalArgumentException  when params are invalid
-     * @throws EmployeeNotFoundException if list doesn't contain searched to be deleted Employee
-     */
-    String delete(String firstName, String lastName) throws EmployeeNotFoundException, IllegalArgumentException;
+        Employee searchedEmployees = employees.stream()
+                .filter(e -> e.getPesel().equals(pesel))
+                .findAny()
+                .orElseThrow(EmployeeNotFoundException::new);
 
-    /**
-     * Returns updated Employee when given params <tt>firstName</tt>, <tt>lastName</tt>, <tt>newFrstName</tt> and <tt>newLastName</tt> are valid.
-     * If <tt>firstName==null</tt> and <tt>lastName==null</tt> throws IllegalArgumentException.
-     * If <tt>newFirstName==null</tt> or <tt>newLastName==null</tt> throws IllegalArgumentException.
-     * If the list doesn't contain Employee to be updated with searched params throws EmployeeNotFoundException.
-     *
-     * @param firstName    string to search and update Employee by first name
-     * @param lastName     string to search and update Employee by last name
-     * @param newFirstName string to update Employees first name
-     * @param newLastName  string to update Employees last name
-     * @return <tt>Employee</tt> updated object
-     * @throws IllegalArgumentException  when params are invalid
-     * @throws EmployeeNotFoundException if list doesn't contain searched to be updated Employee
-     */
-    Employee update(String firstName, String lastName, String newFirstName, String newLastName) throws EmployeeNotFoundException, IllegalArgumentException;
+        return searchedEmployees;
+    }
+
+    @Override
+    public Employee create(String firstName, String lastName, Long pesel) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException {
+        validatePesel(pesel);
+
+        boolean employeeExists = employees.stream()
+                .anyMatch(e -> e.getPesel().equals(pesel));
+
+        if (employeeExists) {
+            throw new EmployeeAlreadyExistsException();
+        }
+
+        if (isNull(firstName)
+                || firstName.length() == 0
+                || isNull(lastName)
+                || lastName.length() == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        employees.add(new Employee(firstName, lastName, pesel));
+
+        return employees.stream()
+                .filter(e -> e.getPesel().equals(pesel))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    @Override
+    public String delete(Long pesel) throws EmployeeNotFoundException, IllegalArgumentException {
+        validatePesel(pesel);
+
+        Employee employeeToDelete = employees.stream()
+                .filter(e -> e.getPesel().equals(pesel))
+                .findAny()
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        employees.removeIf(e -> e.getPesel().equals(pesel));
+
+        return "Deleted employee: " + employeeToDelete;
+    }
+
+    @Override
+    public Employee update(Long pesel, String newFirstName, String newLastName, Long newPesel) throws
+            EmployeeNotFoundException, IllegalArgumentException {
+        validatePesel(pesel);
+
+        if (isNull(newFirstName) && isNull(newLastName) && isNull(newPesel)) {
+            throw new IllegalArgumentException();
+        }
+
+        Employee employeeToUpdate = employees.stream()
+                .filter(e -> e.getPesel().equals(pesel))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+
+        boolean isEmployeeDeleted = employees.removeIf(e -> e.getPesel().equals(pesel));
+
+        if (!isEmployeeDeleted) {
+            throw new EmployeeNotFoundException();
+        }
+
+        Employee updatedEmployee = new Employee(employeeToUpdate.getId(),
+                returnFirstName(employeeToUpdate.getFirstName(), newFirstName),
+                returnLastName(employeeToUpdate.getLastName(), newLastName),
+                returnPesel(employeeToUpdate.getPesel(), newPesel),
+                employeeToUpdate.getCreated()
+        );
+
+        employees.add(updatedEmployee);
+
+        return employees.stream()
+                .filter(e -> e.getPesel().equals(returnPesel(pesel, newPesel)))
+                .findFirst()
+                .orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    private void validatePesel(Long pesel) throws IllegalArgumentException {
+        if (isNull(pesel)) {
+            throw new IllegalArgumentException();
+        }
+
+        if (11 != pesel.toString().length()) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int i = 0; i < pesel.toString().length(); i++) {
+            if (!Character.isDigit(pesel.toString().charAt(i))) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        if (pesel.toString().charAt(0) == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (pesel.compareTo(0L) <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private String returnFirstName(String firstName, String newFirstName) {
+        if (isNull(newFirstName) || newFirstName.length() == 0) {
+            return firstName;
+        } else {
+            return newFirstName;
+        }
+    }
+
+    private String returnLastName(String lastName, String newLastName) {
+        if (isNull(newLastName) || newLastName.length() == 0) {
+            return lastName;
+        } else {
+            return newLastName;
+        }
+    }
+
+    private Long returnPesel(Long pesel, Long newPesel) {
+        try {
+            validatePesel(newPesel);
+            return newPesel;
+        } catch (IllegalArgumentException ex) {
+            return pesel;
+        }
+    }
 }

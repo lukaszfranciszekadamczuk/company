@@ -18,6 +18,8 @@ public class Employee {
     private String firstName;
     @JsonProperty("lastName")
     private String lastName;
+    @JsonProperty("firstName")
+    private Long pesel;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
@@ -28,11 +30,20 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName) {
+    public Employee(String firstName, String lastName, Long pesel) {
         this.id = UUID.randomUUID();
         this.firstName = firstName;
         this.lastName = lastName;
+        this.pesel = pesel;
         this.created = LocalDate.now();
+    }
+
+    public Employee(UUID id, String firstName, String lastName, Long pesel, LocalDate created) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.pesel = pesel;
+        this.created = created;
     }
 
     public void setId(UUID id) {
@@ -47,25 +58,16 @@ public class Employee {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
-        this.created = created;
+    public Long getPesel() {
+        return pesel;
     }
 
     @Override
