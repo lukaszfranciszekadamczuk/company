@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EmployeeRepositoryTest {
+public class EmployeeRepositoryImplTest {
+
     @Autowired
     private EmployeeRepository repository;
 
@@ -29,7 +30,7 @@ public class EmployeeRepositoryTest {
 
     @After
     public void tearDown() {
-        repository.findAll().clear();
+        repository.clear();
     }
 
     @Test

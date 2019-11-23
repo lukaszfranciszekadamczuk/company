@@ -1,17 +1,13 @@
 package tech.lideo.company.repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
-
-import javax.json.Json;
-import javax.json.JsonArray;
 
 @Repository
 public class JsonEmployeeRepository {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private JsonArray array = Json.createArrayBuilder().build();
-    private String path = "persistence/employee-repository.json";
+//    private ObjectMapper mapper = new ObjectMapper();
+//    private JsonArray array = Json.createArrayBuilder().build();
+//    private String path = "persistence/employee-repository.json";
 //
 //    public Employee create(Employee employee) throws IOException, EmployeeNotFoundException {
 //
