@@ -43,7 +43,7 @@ public class EmployeeControllerImplTest {
     }
 
     @Test
-    public void should_call_repository_find_method() throws EmployeeNotFoundException {
+    public void should_call_service_find_method() throws EmployeeNotFoundException {
         //given
         Long pesel = 11223344556L;
 
@@ -55,7 +55,7 @@ public class EmployeeControllerImplTest {
     }
 
     @Test
-    public void should_call_repository_create_method() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
+    public void should_call_service_create_method() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
         //given
         String firstName = "";
         String lastName = "";
@@ -69,7 +69,7 @@ public class EmployeeControllerImplTest {
     }
 
     @Test
-    public void should_call_repository_delete_method() throws EmployeeNotFoundException {
+    public void should_call_service_delete_method() throws EmployeeNotFoundException {
         String message = "Employee ... deleted";
         //given
         Long pesel = 11223344556L;
@@ -82,7 +82,7 @@ public class EmployeeControllerImplTest {
     }
 
     @Test
-    public void should_call_repository_update_method() throws EmployeeNotFoundException {
+    public void should_call_service_update_method() throws EmployeeNotFoundException {
         //given
         Long pesel = 99999999999L;
         String newFirstName = "Karabasz";
