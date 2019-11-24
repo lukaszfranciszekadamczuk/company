@@ -1,4 +1,4 @@
-package tech.lideo.company.repository;
+package tech.lideo.company.controller;
 
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
@@ -7,13 +7,13 @@ import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
 import java.util.List;
 
 /**
- * A repository that stores Employees.
- * The interface provides 5 methods for working on the repository
+ * A Controller that receives requests from User and pass them to Employee servoice.
+ * The interface provides 5 methods for working on the controller
  *
  * @author Paweł Woźny
  */
 
-public interface EmployeeRepository {
+public interface EmployeeController {
 
     /**
      * Returns list of all stored Employees.
@@ -79,9 +79,4 @@ public interface EmployeeRepository {
      * @throws EmployeeNotFoundException if list doesn't contain searched to be updated Employee
      */
     Employee update(Long pesel, String newFirstName, String newLastName, Long newPesel) throws EmployeeNotFoundException, IllegalArgumentException;
-
-    /**
-     * Method clears Employee list
-    * */
-    void clear();
 }

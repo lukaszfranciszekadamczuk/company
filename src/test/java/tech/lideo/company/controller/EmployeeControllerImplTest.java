@@ -1,14 +1,12 @@
-package tech.lideo.company.service;
+package tech.lideo.company.controller;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import tech.lideo.company.repository.EmployeeRepository;
+import tech.lideo.company.service.EmployeeServiceImpl;
 import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
 import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
 
@@ -20,21 +18,16 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EmployeeServiceImplTest {
+public class EmployeeControllerImplTest {
 
     @Mock
-    private EmployeeRepository repository;
-
-    @InjectMocks
     private EmployeeServiceImpl service;
 
-    @After
-    public void tearDown() {
-        Mockito.reset();
-    }
+    @InjectMocks
+    private EmployeeControllerImpl controller;
 
     @Test
-    public void should_call_repository_find_all_method() {
+    public void should_call_service_find_all_method() {
         //given
         UUID id = UUID.randomUUID();
         String firstName = "Pan";
@@ -43,10 +36,10 @@ public class EmployeeServiceImplTest {
         LocalDate created = LocalDate.now();
 
         //when
-        service.findAll();
+        controller.findAll();
 
         //then
-        verify(repository, times(1)).findAll();
+        verify(service, times(1)).findAll();
     }
 
     @Test
@@ -55,10 +48,10 @@ public class EmployeeServiceImplTest {
         Long pesel = 11223344556L;
 
         //when
-        service.find(pesel);
+        controller.find(pesel);
 
         //then
-        verify(repository, times(1)).find(pesel);
+        verify(service, times(1)).find(pesel);
     }
 
     @Test
@@ -69,10 +62,10 @@ public class EmployeeServiceImplTest {
         Long pesel = null;
 
         //when
-        service.create(firstName, lastName, pesel);
+        controller.create(firstName, lastName, pesel);
 
         //then
-        verify(repository, times(1)).create(firstName, lastName, pesel);
+        verify(service, times(1)).create(firstName, lastName, pesel);
     }
 
     @Test
@@ -82,10 +75,10 @@ public class EmployeeServiceImplTest {
         Long pesel = 11223344556L;
 
         //when
-        service.delete(pesel);
+        controller.delete(pesel);
 
         //then
-        verify(repository, times(1)).delete(pesel);
+        verify(service, times(1)).delete(pesel);
     }
 
     @Test
@@ -97,9 +90,9 @@ public class EmployeeServiceImplTest {
         Long newPesel = 33355577798L;
 
         //when
-        service.update(pesel, newFirstName, newLastName, newPesel);
+        controller.update(pesel, newFirstName, newLastName, newPesel);
 
         //then
-        verify(repository, times(1)).update(pesel, newFirstName, newLastName, newPesel);
+        verify(service, times(1)).update(pesel, newFirstName, newLastName, newPesel);
     }
 }

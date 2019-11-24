@@ -7,7 +7,7 @@ import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
 import java.util.List;
 
 /**
- * A Service that is connected to Employee repository.
+ * A Service that receives requests from controller and pass them to Employee repository.
  * The interface provides 5 methods for working on the service
  *
  * @author Paweł Woźny
