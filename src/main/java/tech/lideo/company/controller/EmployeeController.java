@@ -1,18 +1,16 @@
 package tech.lideo.company.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tech.lideo.company.model.Employee;
-import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
-import tech.lideo.company.repository.exception.EmployeeNotFoundException;
-import tech.lideo.company.repository.exception.EmployeePeselException;
-import tech.lideo.company.repository.exception.MissingReqiredUpdateArgumentsException;
+import tech.lideo.company.model.EmployeeData;
+import tech.lideo.company.model.EmployeeWithEmployeeData;
+import tech.lideo.company.repository.exception.*;
 import tech.lideo.company.service.EmployeeService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/company")
 public class EmployeeController implements IEmployeeController {
 
@@ -21,38 +19,36 @@ public class EmployeeController implements IEmployeeController {
 
     @Override
     @GetMapping("/findAll")
-    public List<Employee> findAll() {
-        return null;
+    public List<EmployeeWithEmployeeData> findAll() {
+        return service.findAll();
     }
 
     @PostMapping("/create")
-    public Employee create(@RequestParam("employee") Employee employee)
-            throws EmployeePeselException, EmployeeNotFoundException, EmployeeAlreadyExistsException {
-        return service.create(employee);
+    public EmployeeWithEmployeeData create(@RequestParam("employee") Employee employee, EmployeeData employeeData)
+            throws EmployeePeselException, EmployeeNotFoundException,
+            EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
+        return service.create(employee, employeeData);
     }
 
     @Override
-    @GetMapping("/delete")
-    public boolean delete(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
-                          @RequestParam("pesel") String pesel) throws EmployeeNotFoundException {
+    @DeleteMapping("/delete/{firstName}/{lastName}/{pesel}")
+    public boolean delete(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String pesel)
+            throws EmployeeNotFoundException {
         return service.delete(firstName, lastName, pesel);
     }
 
     @Override
-    @GetMapping("/find")
-    public Employee find(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
-                         @RequestParam("pesel") String pesel) throws EmployeeNotFoundException {
+    @GetMapping("/find/{firstName}/{lastName}/{pesel}")
+    public Employee find(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String pesel)
+            throws EmployeeNotFoundException {
         return service.find(firstName, lastName, pesel);
     }
 
     @Override
-    @PutMapping("/update")
-    public Employee update(@RequestParam("actualFirstName") String actualFirstName,
-                           @RequestParam("actualLastName") String actualLastName,
-                           @RequestParam("actualPesel") String actualPesel,
-                           @RequestParam("newFirstName") String newFirstName,
-                           @RequestParam("newLastName") String newLastName,
-                           @RequestParam("newPesel") String newPesel)
+    @PutMapping("/update/{actualFirstName}/{actualLastName}/{actualPesel}/{newFirstName}/{newLastName}/{newPesel}")
+    public Employee update(
+            @PathVariable String actualFirstName, @PathVariable String actualLastName, @PathVariable String actualPesel,
+            @PathVariable String newFirstName, @PathVariable String newLastName, @PathVariable String newPesel)
             throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException {
         return service.update(actualFirstName, actualLastName, actualPesel, newFirstName, newLastName, newPesel);
     }

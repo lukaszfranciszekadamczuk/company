@@ -16,6 +16,8 @@ public interface IEmployeeRepository {
      */
     List<Employee> findAll();
 
+    int employeeListSize();
+
     Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException;
 
     boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EmployeeRepositoryTest {
 
     @Autowired
-    private EmployeeRepository repository;
+    private EmployeeRepository employeeRepository;
 
     private Employee employeeOne;
     private Employee employeeTwo;
@@ -38,28 +38,28 @@ public class EmployeeRepositoryTest {
 
     @After
     public void tearDown() {
-        repository.findAll().clear();
+        employeeRepository.findAll().clear();
     }
 
     @Test
     public void should_return_employee_list()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
-        int listSize = repository.findAll().size();
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
+        int listSize = employeeRepository.employeeListSize();
 
         //then
         assertEquals(2, listSize);
-        assertEquals(employeeOne.getId(), repository.findAll().get(0).getId());
-        assertEquals(employeeTwo.getId(), repository.findAll().get(1).getId());
+        assertEquals(employeeOne.getId(), employeeRepository.findAll().get(0).getId());
+        assertEquals(employeeTwo.getId(), employeeRepository.findAll().get(1).getId());
     }
 
     @Test
     public void should_create_employee()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        Employee createEmployee = repository.create(employeeOne);
+        Employee createEmployee = employeeRepository.create(employeeOne);
 
         //then
         assertEquals(employeeOne, createEmployee);
@@ -69,64 +69,64 @@ public class EmployeeRepositoryTest {
     public void should_return_exception_after_create_employee_with_the_same_pesel()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeOne);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeOne);
     }
 
     @Test(expected = EmployeePeselException.class)
     public void should_return_exception_after_create_employee_with_no_11_characters_pesel()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeWithout11CharactersPesel);
+        employeeRepository.create(employeeWithout11CharactersPesel);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_return_exception_after_create_employee_with_no_reqired_data()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeWithoutFirstName);
+        employeeRepository.create(employeeWithoutFirstName);
     }
 
     @Test
     public void should_delete_employee()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        boolean isEmployeeDelete = repository.delete("Marek", "Nowak", "80060708999");
+        boolean isEmployeeDelete = employeeRepository.delete("Marek", "Nowak", "80060708999");
 
         //then
         assertEquals(true, isEmployeeDelete);
-        assertEquals(1, repository.findAll().size());
+        assertEquals(1, employeeRepository.findAll().size());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_return_exception_after_delete_employee_with_no_reqired_data()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
+        employeeRepository.create(employeeOne);
 
-        repository.delete(null, "Kowaski", "90050505555");
+        employeeRepository.delete(null, "Kowaski", "90050505555");
     }
 
     @Test(expected = EmployeeNotFoundException.class)
     public void should_return_exception_after_delete_no_exist_employee()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository.delete("Rafał", "Majka", "90050505555");
+        employeeRepository.delete("Rafał", "Majka", "90050505555");
     }
 
     @Test
     public void should_find_employee() throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        Employee searchingEmployee = repository.find("Marek", "Nowak", "80060708999");
+        Employee searchingEmployee = employeeRepository.find("Marek", "Nowak", "80060708999");
 
         //then
         assertEquals(employeeTwo, searchingEmployee);
@@ -136,20 +136,20 @@ public class EmployeeRepositoryTest {
     public void should_return_exception_after_search_no_exist_employee()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository.find("Paweł", "Majak", "80060708999");
+        employeeRepository.find("Paweł", "Majak", "80060708999");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_return_exception_after_search_by_no_reqired_data()
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository.find(null, "Nowak", "80060708999");
+        employeeRepository.find(null, "Nowak", "80060708999");
     }
 
     @Test
@@ -162,10 +162,10 @@ public class EmployeeRepositoryTest {
         String newPesel = "82020202999";
 
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        Employee updateEmployee = repository
+        Employee updateEmployee = employeeRepository
                 .update("Marek", "Nowak", "80060708999",
                         newFirstName, newLastName, newPesel);
 
@@ -183,10 +183,10 @@ public class EmployeeRepositoryTest {
         String newFirstName = "Karol";
 
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        Employee updateEmployee = repository
+        Employee updateEmployee = employeeRepository
                 .update("Marek", "Nowak", "80060708999",
                         newFirstName, null, null);
 
@@ -201,10 +201,10 @@ public class EmployeeRepositoryTest {
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException,
             MissingReqiredUpdateArgumentsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository
+        employeeRepository
                 .update("Roman", "Kostrzewa", "80060708999",
                         "Tadeusz", "Nalepa", "6606070111");
     }
@@ -214,10 +214,10 @@ public class EmployeeRepositoryTest {
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException,
             MissingReqiredUpdateArgumentsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository
+        employeeRepository
                 .update(null, "Nowak", "80060708999",
                         "Tadeusz", "Nalepa", "55050505123");
     }
@@ -227,10 +227,10 @@ public class EmployeeRepositoryTest {
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException,
             MissingReqiredUpdateArgumentsException, EmployeePeselException {
         //when
-        repository.create(employeeOne);
-        repository.create(employeeTwo);
+        employeeRepository.create(employeeOne);
+        employeeRepository.create(employeeTwo);
 
-        repository
+        employeeRepository
                 .update("Marek", "Nowak", "80060708999",
                         null, null, null);
     }

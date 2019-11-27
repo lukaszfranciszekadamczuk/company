@@ -9,6 +9,7 @@ import tech.lideo.company.repository.exception.MissingReqiredUpdateArgumentsExce
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -16,13 +17,21 @@ import static java.util.Objects.isNull;
 public class EmployeeRepository implements IEmployeeRepository {
 
     private List<Employee> employeeList = new ArrayList<>();
+    private List<Employee> employeeListCopy = new ArrayList<>();
     private String firstName;
     private String lastName;
     private String pesel;
 
     @Override
     public List<Employee> findAll() {
-        return employeeList;
+        employeeListCopy = employeeList.stream()
+                .collect(Collectors.toList());
+        return employeeListCopy;
+    }
+
+    @Override
+    public int employeeListSize(){
+        return employeeListCopy.size();
     }
 
     @Override

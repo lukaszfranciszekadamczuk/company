@@ -1,10 +1,9 @@
 package tech.lideo.company.service;
 
 import tech.lideo.company.model.Employee;
-import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
-import tech.lideo.company.repository.exception.EmployeeNotFoundException;
-import tech.lideo.company.repository.exception.EmployeePeselException;
-import tech.lideo.company.repository.exception.MissingReqiredUpdateArgumentsException;
+import tech.lideo.company.model.EmployeeData;
+import tech.lideo.company.model.EmployeeWithEmployeeData;
+import tech.lideo.company.repository.exception.*;
 
 import java.util.List;
 
@@ -12,10 +11,11 @@ public interface IEmployeeService {
     /**
      *
      */
-    List<Employee> findAll();
+    List<EmployeeWithEmployeeData> findAll();
 
-    Employee create(Employee employee)
-            throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException;
+    EmployeeWithEmployeeData create(Employee employee, EmployeeData employeeData)
+            throws EmployeeAlreadyExistsException, EmployeeNotFoundException,
+            EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException;
 
     boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
 
