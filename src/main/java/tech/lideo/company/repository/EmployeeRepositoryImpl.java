@@ -144,6 +144,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     }
 
+    @Override
+    public int size() {
+        return employees.size();
+    }
+
     private void validatePesel(Long pesel) throws IllegalArgumentException {
         if (isNull(pesel)) {
             throw new IllegalArgumentException();

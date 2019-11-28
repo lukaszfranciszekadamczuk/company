@@ -183,4 +183,16 @@ public class EmployeeRepositoryImplTest {
 
         //then
     }
+
+    @Test
+    public void should_return_list_size() {
+        //given
+        int size = 2;
+
+        //when
+        int employeeSize = repository.size();
+
+        //then
+        assertEquals(size, employeeSize);
+    }
 }

@@ -3,6 +3,7 @@ package tech.lideo.company.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tech.lideo.company.model.Employee;
+import tech.lideo.company.service.EmployeeService;
 import tech.lideo.company.service.EmployeeServiceImpl;
 import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
 import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
@@ -14,7 +15,7 @@ import java.util.List;
 public class EmployeeControllerImpl implements EmployeeController {
 
     @Autowired
-    private EmployeeServiceImpl service;
+    private EmployeeService service;
 
     @GetMapping("/findAll")
     @Override

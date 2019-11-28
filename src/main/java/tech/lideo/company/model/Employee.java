@@ -18,7 +18,7 @@ public class Employee {
     private String firstName;
     @JsonProperty("lastName")
     private String lastName;
-    @JsonProperty("firstName")
+    @JsonProperty("pesel")
     private Long pesel;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)

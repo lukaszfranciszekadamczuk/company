@@ -82,6 +82,13 @@ public interface EmployeeRepository {
 
     /**
      * Method clears Employee list
-    * */
+     */
     void clear();
+
+    /**
+     * Method returns Employee list size
+     *
+     * @return <tt>int</tt> list size
+     */
+    int size();
 }
