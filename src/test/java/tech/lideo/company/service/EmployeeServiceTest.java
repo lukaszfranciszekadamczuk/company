@@ -10,14 +10,11 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeData;
-import tech.lideo.company.model.Salary;
 import tech.lideo.company.repository.EmployeeRepository;
 import tech.lideo.company.repository.exception.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,8 +53,7 @@ public class EmployeeServiceTest {
     @Test
     public void should_return_create_employee() throws EmployeePeselException, EmployeeNotFoundException,
             EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
-        employeeData = new EmployeeData(employee.getPesel(),
-                asList(new Salary(LocalDate.now(), new BigDecimal(1000))));
+        employeeData = new EmployeeData(employee.getPesel(), new BigDecimal(1000));
 
         //when
         employeeService.create(employee, employeeData);
@@ -66,11 +62,11 @@ public class EmployeeServiceTest {
         verify(employeeRepository, times(1)).create(any());
     }
 
-    @Test (expected = EmployeeDataNotFoundException.class)
+    @Test(expected = EmployeeDataNotFoundException.class)
     public void should_return_exception_after_create_employee_with_no_maching_employee_data()
             throws EmployeePeselException, EmployeeNotFoundException,
             EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
-        employeeData = new EmployeeData("55040433432", asList());
+        employeeData = new EmployeeData("55040433432", new BigDecimal(1000));
 
         //when
         employeeService.create(employee, employeeData);

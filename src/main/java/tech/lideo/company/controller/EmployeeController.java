@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeData;
-import tech.lideo.company.model.EmployeeWithEmployeeData;
+import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.repository.exception.*;
 import tech.lideo.company.service.EmployeeService;
 
@@ -19,15 +19,16 @@ public class EmployeeController implements IEmployeeController {
 
     @Override
     @GetMapping("/findAll")
-    public List<EmployeeWithEmployeeData> findAll() {
+    public List<EmployeeDTO> findAll() {
+
         return service.findAll();
     }
 
     @PostMapping("/create")
-    public EmployeeWithEmployeeData create(@RequestParam("employee") Employee employee, EmployeeData employeeData)
+    public EmployeeDTO create(@RequestBody EmployeeDTO employeeDTO)
             throws EmployeePeselException, EmployeeNotFoundException,
             EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
-        return service.create(employee, employeeData);
+        return service.create(employeeDTO.getEmployee(), employeeDTO.getEmployeeData());
     }
 
     @Override

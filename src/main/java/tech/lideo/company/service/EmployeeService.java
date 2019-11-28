@@ -3,8 +3,8 @@ package tech.lideo.company.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.lideo.company.model.Employee;
+import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
-import tech.lideo.company.model.EmployeeWithEmployeeData;
 import tech.lideo.company.repository.EmployeeDataRepository;
 import tech.lideo.company.repository.EmployeeRepository;
 import tech.lideo.company.repository.exception.*;
@@ -12,13 +12,11 @@ import tech.lideo.company.repository.exception.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 @Service("service")
 public class EmployeeService implements IEmployeeService {
 
-    private List<EmployeeWithEmployeeData> employeeWithEmployeeDataList= new ArrayList<>();
-    private EmployeeWithEmployeeData employeeWithEmployeeData;
+    private List<EmployeeDTO> employeeDTOList = new ArrayList<>();
+    private EmployeeDTO employeeDTO;
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -27,23 +25,23 @@ public class EmployeeService implements IEmployeeService {
     EmployeeDataRepository employeeDataRepository;
 
     @Override
-    public List<EmployeeWithEmployeeData> findAll() {
-        return employeeWithEmployeeDataList;
+    public List<EmployeeDTO> findAll() {
+        return employeeDTOList;
     }
 
     @Override
-    public EmployeeWithEmployeeData create(Employee employee, EmployeeData employeeData)
+    public EmployeeDTO create(Employee employee, EmployeeData employeeData)
             throws EmployeeNotFoundException, EmployeeAlreadyExistsException,
             EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
         if (!employee.getPesel().equals(employeeData.getEmployeeId()))
             throw new EmployeeDataNotFoundException();
 
-        employeeWithEmployeeData =
-                new EmployeeWithEmployeeData(employeeRepository.create(employee), employeeDataRepository.create(employeeData));
+        employeeDTO =
+                new EmployeeDTO(employeeRepository.create(employee), employeeDataRepository.create(employeeData));
 
-        employeeWithEmployeeDataList.add(employeeWithEmployeeData);
+        employeeDTOList.add(employeeDTO);
 
-        return employeeWithEmployeeDataList.stream()
+        return employeeDTOList.stream()
                 .filter(e->e.getEmployee().equals(employee))
                 .filter(e->e.getEmployeeData().equals(employeeData))
                 .findFirst()

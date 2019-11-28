@@ -8,9 +8,9 @@ public class EmployeeData {
 
     private UUID salaryId;
     private String employeeId;
-    private List<Salary> salary;
+    private BigDecimal salary;
 
-    public EmployeeData(String employeeId, List<Salary> salary) {
+    public EmployeeData(String employeeId, BigDecimal salary) {
         this.salaryId = UUID.randomUUID();
         this.employeeId = employeeId;
         this.salary = salary;
@@ -27,7 +27,7 @@ public class EmployeeData {
         return employeeId;
     }
 
-    public List<Salary> getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
 }
