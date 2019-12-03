@@ -1,3 +1,16 @@
+package tech.lideo.company.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import tech.lideo.company.controller.IEmployeeController;
+import tech.lideo.company.model.Employee;
+import tech.lideo.company.model.EmployeeDTO;
+import tech.lideo.company.repository.exception.*;
+import tech.lideo.company.service.EmployeeService;
+
+import java.util.List;
+
 //package tech.lideo.company.controller;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +23,56 @@
 //
 //import java.util.List;
 //
-//@RestController
-//@RequestMapping("/company")
-//public class EmployeeController implements IEmployeeController {
-//
+@RestController
+@RequestMapping("/company")
+public class EmployeeController implements IEmployeeController {
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private EmployeeDataService employeeDataService;
+
+    @Autowired
+    private EmployeeAgregatedSplitter splitter;
+    @Autowired
+    private EmployeeAgregatedCombiner combiner;
+
+    @Override
+    public EmployeeAgregtedDTO create(EmployeeAgregtedDTO dto) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
+
+        //rozdzielam EmployeeAgregtedDTO dto na EmployeeDTO i stukam do servicu employeeService - reszta w service
+
+        EmployeeDTO employeeDTO =  employeeService.create(splitter.splitEmployee(dto));
+        //rozdzielam EmployeeAgregtedDTO dto na EmployeeDataDTO i stukam do servicu employeeDataService - reszta w service
+        EmployeeDataDTO employeeDataDTO =  employeeDataService.create(splitter.splitEmployeeData(dto));
+
+        //metoda combine(połącz) zwraca obiekt typu EmployeeAgregtedDTO
+        return combiner.combine(employeeDTO,employeeDataDTO);
+
+    }
+
+
+    @Override
+    public List<EmployeeDTO> findAll() {
+        return null;
+    }
+
+    @Override
+    public boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+        return false;
+    }
+
+    @Override
+    public Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Employee update(String actualFirstName, String actualLastName, String actualPesel, String newFirstName, String newLastName, String newPesel) throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException {
+        return null;
+    }
+}
 //    @Autowired
 //    EmployeeService service;
 //
