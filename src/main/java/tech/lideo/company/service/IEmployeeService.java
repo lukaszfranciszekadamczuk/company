@@ -1,12 +1,7 @@
 package tech.lideo.company.service;
 
-import tech.lideo.company.mapper.MapperEmployee;
-import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
-import tech.lideo.company.model.EmployeeData;
 import tech.lideo.company.repository.exception.*;
-
-import java.util.List;
 
 public interface IEmployeeService {
     /**
@@ -14,7 +9,7 @@ public interface IEmployeeService {
      */
 //    List<EmployeeDTO> findAll();
 
-    EmployeeDTO create() throws EmployeeDataNotFoundException;
+    EmployeeDTO create(EmployeeDTO dto) throws EmployeeDataNotFoundException, EmployeePeselException, EmployeeNotFoundException, EmployeeAlreadyExistsException;
 
 //    boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
 //

@@ -2,13 +2,15 @@ package tech.lideo.company.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.lideo.company.mapper.MapperEmployee;
+import tech.lideo.company.mapper.EmployeeMapper;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
-import tech.lideo.company.model.EmployeeData;
 import tech.lideo.company.repository.EmployeeDataRepository;
 import tech.lideo.company.repository.EmployeeRepository;
-import tech.lideo.company.repository.exception.*;
+import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
+import tech.lideo.company.repository.exception.EmployeeDataNotFoundException;
+import tech.lideo.company.repository.exception.EmployeeNotFoundException;
+import tech.lideo.company.repository.exception.EmployeePeselException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +21,17 @@ public class EmployeeService implements IEmployeeService {
     private List<EmployeeDTO> employeeDTOList = new ArrayList<>();
     private EmployeeDTO employeeDTO;
 
-//    @Autowired
+    @Autowired
+    private EmployeeMapper mapper;
+
+    @Autowired
     private EmployeeRepository employeeRepository;
 
-//    @Autowired
+    //    @Autowired
     private EmployeeDataRepository employeeDataRepository;
 
-//    @Autowired
-    private MapperEmployee mapperEmployee = new MapperEmployee();
+    //    @Autowired
+    private EmployeeMapper employeeMapper = new EmployeeMapper();
 
 //    @Override
 //    public List<EmployeeDTO> findAll() {
@@ -34,11 +39,16 @@ public class EmployeeService implements IEmployeeService {
 //    }
 
     @Override
-    public EmployeeDTO create() throws EmployeeDataNotFoundException {
-        if (!employeeDTO.getPesel().equals(employeeDTO.getEmployeeId()))
-            throw new EmployeeDataNotFoundException();
+    public EmployeeDTO create(EmployeeDTO dto) throws EmployeeDataNotFoundException, EmployeePeselException, EmployeeNotFoundException, EmployeeAlreadyExistsException {
 
-        return mapperEmployee.getEmployeeDTO();
+        Employee employee = employeeRepository.create(mapper.mapToModel(dto));
+
+        return mapper.mapToDTO(employee);
+
+//        if (!employeeDTO.getPesel().equals(employeeDTO.getEmployeeId()))
+//            throw new EmployeeDataNotFoundException();
+//
+//        return mapperEmployee.getEmployeeDTO();
     }
 
 //    @Override

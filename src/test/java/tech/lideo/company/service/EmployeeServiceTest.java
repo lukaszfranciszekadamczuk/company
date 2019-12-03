@@ -7,9 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
-import tech.lideo.company.mapper.MapperEmployee;
+import tech.lideo.company.mapper.EmployeeMapper;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
@@ -36,7 +35,7 @@ public class EmployeeServiceTest {
 
 //    @Autowired
     private EmployeeDTO employeeDTO;
-    private MapperEmployee mapperEmployee;
+    private EmployeeMapper employeeMapper;
 
     private Employee employee;
     private EmployeeData employeeData;
@@ -68,7 +67,7 @@ public class EmployeeServiceTest {
         employeeRepository.create(employee);
         employeeDataRepository.create(employeeData);
 
-        EmployeeDTO employeeDTO = new MapperEmployee().getEmployeeDTO();
+        EmployeeDTO employeeDTO = new EmployeeMapper().getEmployeeDTO();
         //when
 
         //then
