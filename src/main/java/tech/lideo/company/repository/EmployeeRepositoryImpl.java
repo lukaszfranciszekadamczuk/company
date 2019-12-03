@@ -18,6 +18,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     private List<Employee> employees = new ArrayList<>();
     private Gson gson = new Gson();
 
+    {
+        employees.add(new Employee("Hans", "Kloss", 12345678919L));
+    }
+
     @Override
     public List<Employee> findAll() throws NoEmployeesException {
         List<Employee> copiedList = new ArrayList<>();
