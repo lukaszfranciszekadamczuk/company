@@ -1,5 +1,6 @@
 package tech.lideo.company.service;
 
+import tech.lideo.company.mapper.MapperEmployee;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
@@ -11,17 +12,15 @@ public interface IEmployeeService {
     /**
      *
      */
-    List<EmployeeDTO> findAll();
+//    List<EmployeeDTO> findAll();
 
-    EmployeeDTO create(Employee employee, EmployeeData employeeData)
-            throws EmployeeAlreadyExistsException, EmployeeNotFoundException,
-            EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException;
+    EmployeeDTO create() throws EmployeeDataNotFoundException;
 
-    boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
-
-    Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
-
-    Employee update(String actualFirstName, String actualLastName, String actualPesel,
-                    String newFirstName, String newLastName, String newPesel)
-            throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException;
+//    boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
+//
+//    Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
+//
+//    Employee update(String actualFirstName, String actualLastName, String actualPesel,
+//                    String newFirstName, String newLastName, String newPesel)
+//            throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException;
 }

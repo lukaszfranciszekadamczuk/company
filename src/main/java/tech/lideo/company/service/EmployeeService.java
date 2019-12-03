@@ -2,6 +2,7 @@ package tech.lideo.company.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tech.lideo.company.mapper.MapperEmployee;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
@@ -18,50 +19,42 @@ public class EmployeeService implements IEmployeeService {
     private List<EmployeeDTO> employeeDTOList = new ArrayList<>();
     private EmployeeDTO employeeDTO;
 
-    @Autowired
-    EmployeeRepository employeeRepository;
+//    @Autowired
+    private EmployeeRepository employeeRepository;
 
-    @Autowired
-    EmployeeDataRepository employeeDataRepository;
+//    @Autowired
+    private EmployeeDataRepository employeeDataRepository;
+
+//    @Autowired
+    private MapperEmployee mapperEmployee = new MapperEmployee();
+
+//    @Override
+//    public List<EmployeeDTO> findAll() {
+//        return employeeDTOList;
+//    }
 
     @Override
-    public List<EmployeeDTO> findAll() {
-        return employeeDTOList;
-    }
-
-    @Override
-    public EmployeeDTO create(Employee employee, EmployeeData employeeData)
-            throws EmployeeNotFoundException, EmployeeAlreadyExistsException,
-            EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
-        if (!employee.getPesel().equals(employeeData.getEmployeeId()))
+    public EmployeeDTO create() throws EmployeeDataNotFoundException {
+        if (!employeeDTO.getPesel().equals(employeeDTO.getEmployeeId()))
             throw new EmployeeDataNotFoundException();
 
-        employeeDTO =
-                new EmployeeDTO(employeeRepository.create(employee), employeeDataRepository.create(employeeData));
-
-        employeeDTOList.add(employeeDTO);
-
-        return employeeDTOList.stream()
-                .filter(e->e.getEmployee().equals(employee))
-                .filter(e->e.getEmployeeData().equals(employeeData))
-                .findFirst()
-                .get();
+        return mapperEmployee.getEmployeeDTO();
     }
 
-    @Override
-    public boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
-        return employeeRepository.delete(firstName, lastName, pesel);
-    }
-
-    @Override
-    public Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
-        return employeeRepository.find(firstName, lastName, pesel);
-    }
-
-    @Override
-    public Employee update(String actualFirstName, String actualLastName, String actualPesel,
-                           String newFirstName, String newLastName, String newPesel)
-            throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException {
-        return employeeRepository.update(actualFirstName, actualLastName, actualPesel, newFirstName, newLastName, newPesel);
-    }
+//    @Override
+//    public boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+//        return employeeRepository.delete(firstName, lastName, pesel);
+//    }
+//
+//    @Override
+//    public Employee find(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {
+//        return employeeRepository.find(firstName, lastName, pesel);
+//    }
+//
+//    @Override
+//    public Employee update(String actualFirstName, String actualLastName, String actualPesel,
+//                           String newFirstName, String newLastName, String newPesel)
+//            throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException {
+//        return employeeRepository.update(actualFirstName, actualLastName, actualPesel, newFirstName, newLastName, newPesel);
+//    }
 }
