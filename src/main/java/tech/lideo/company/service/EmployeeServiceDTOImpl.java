@@ -1,21 +1,6 @@
 package tech.lideo.company.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.lideo.company.model.Employee;
-import tech.lideo.company.controller.dto.EmployeeDTO;
-import tech.lideo.company.model.EmployeeData;
-import tech.lideo.company.controller.dto.EmployeeDataDTO;
-import tech.lideo.company.repository.EmployeeDataRepository;
-import tech.lideo.company.repository.EmployeeRepository;
-import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
-import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceDTOImpl implements EmployeeServiceDTO {

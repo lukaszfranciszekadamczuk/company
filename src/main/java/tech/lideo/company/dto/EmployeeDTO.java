@@ -1,4 +1,4 @@
-package tech.lideo.company.controller.dto;
+package tech.lideo.company.dto;
 
 import java.util.Objects;
 
@@ -38,5 +38,17 @@ public class EmployeeDTO {
                 ", lastName='" + lastName + '\'' +
                 ", pesel=" + pesel +
                 '}';
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Long getPesel() {
+        return pesel;
     }
 }

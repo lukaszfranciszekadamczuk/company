@@ -1,15 +1,5 @@
 package tech.lideo.company.service;
 
-import tech.lideo.company.model.Employee;
-import tech.lideo.company.controller.dto.EmployeeDTO;
-import tech.lideo.company.controller.dto.EmployeeDataDTO;
-import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
-import tech.lideo.company.shared.exceptions.EmployeeNotFoundException;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 
 public interface EmployeeServiceDTO {
 //
