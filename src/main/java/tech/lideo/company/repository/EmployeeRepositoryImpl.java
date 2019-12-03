@@ -1,5 +1,6 @@
 package tech.lideo.company.repository;
 
+import com.google.gson.Gson;
 import org.springframework.stereotype.Repository;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.shared.exceptions.EmployeeAlreadyExistsException;
@@ -15,18 +16,15 @@ import static java.util.Objects.isNull;
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private List<Employee> employees = new ArrayList<>();
+    private Gson gson = new Gson();
 
     @Override
     public List<Employee> findAll() throws NoEmployeesException {
         List<Employee> copiedList = new ArrayList<>();
 
         for (Employee e : employees) {
-            copiedList.add(new Employee(
-                    e.getId(),
-                    e.getFirstName(),
-                    e.getLastName(),
-                    e.getPesel(),
-                    e.getCreated()));
+            String empl = gson.toJson(e);
+            copiedList.add(gson.fromJson(empl, Employee.class));
         }
 
         return copiedList;
@@ -34,57 +32,45 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Employee find(Long pesel) throws EmployeeNotFoundException, IllegalArgumentException {
-        validatePesel(pesel);
+        validate(pesel);
 
-        Employee foundEmployee = employees.stream()
+        Employee employee = employees.stream()
                 .filter(e -> e.getPesel().equals(pesel))
                 .findAny()
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        return new Employee(
-                foundEmployee.getId(),
-                foundEmployee.getFirstName(),
-                foundEmployee.getLastName(),
-                foundEmployee.getPesel(),
-                foundEmployee.getCreated());
+        String empl = gson.toJson(employee);
+
+        return gson.fromJson(empl, Employee.class);
     }
 
     @Override
-    public Employee create(String firstName, String lastName, Long pesel) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException {
-        if (isNull(firstName)
-                || firstName.length() == 0
-                || isNull(lastName)
-                || lastName.length() == 0) {
-            throw new IllegalArgumentException();
-        }
-        validatePesel(pesel);
+    public Employee create(Employee model) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, IllegalArgumentException {
+        validate(model);
+        validate(model.getPesel());
 
         boolean employeeExists = employees.stream()
-                .anyMatch(e -> e.getPesel().equals(pesel));
+                .anyMatch(e -> e.getPesel().equals(model.getPesel()));
 
         if (employeeExists) {
             throw new EmployeeAlreadyExistsException();
         }
 
-        employees.add(new Employee(firstName, lastName, pesel));
+        employees.add(new Employee(model.getFirstName(), model.getLastName(), model.getPesel()));
 
-
-        Employee createdEmployee = employees.stream()
-                .filter(e -> e.getPesel().equals(pesel))
+        Employee employee = employees.stream()
+                .filter(e -> e.getPesel().equals(model.getPesel()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        return new Employee(
-                createdEmployee.getId(),
-                createdEmployee.getFirstName(),
-                createdEmployee.getLastName(),
-                createdEmployee.getPesel(),
-                createdEmployee.getCreated());
+        String empl = gson.toJson(employee);
+
+        return gson.fromJson(empl, Employee.class);
     }
 
     @Override
     public String delete(Long pesel) throws EmployeeNotFoundException, IllegalArgumentException {
-        validatePesel(pesel);
+        validate(pesel);
 
         Employee employeeToDelete = employees.stream()
                 .filter(e -> e.getPesel().equals(pesel))
@@ -97,13 +83,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public Employee update(Long pesel, String newFirstName, String newLastName, Long newPesel) throws
+    public Employee update(Long pesel, Employee model) throws
             EmployeeNotFoundException, IllegalArgumentException {
-        validatePesel(pesel);
-
-        if (isNull(newFirstName) && isNull(newLastName) && isNull(newPesel)) {
-            throw new IllegalArgumentException();
-        }
+        validate(pesel);
+        validate(model.getPesel());
 
         Employee employeeToUpdate = employees.stream()
                 .filter(e -> e.getPesel().equals(pesel))
@@ -116,26 +99,24 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             throw new EmployeeNotFoundException();
         }
 
-        Employee updatedEmployee = new Employee(employeeToUpdate.getId(),
-                returnFirstName(employeeToUpdate.getFirstName(), newFirstName),
-                returnLastName(employeeToUpdate.getLastName(), newLastName),
-                returnPesel(employeeToUpdate.getPesel(), newPesel),
+        Employee updatedEmployee = new Employee(
+                employeeToUpdate.getId(),
+                returnFirstName(employeeToUpdate.getFirstName(), model.getFirstName()),
+                returnLastName(employeeToUpdate.getLastName(), model.getLastName()),
+                returnPesel(employeeToUpdate.getPesel(), model.getPesel()),
                 employeeToUpdate.getCreated()
         );
 
         employees.add(updatedEmployee);
 
-        Employee foundUpdatedEmployee = employees.stream()
-                .filter(e -> e.getPesel().equals(returnPesel(pesel, newPesel)))
+        Employee employee = employees.stream()
+                .filter(e -> e.getPesel().equals(model.getPesel()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
 
-        return new Employee(
-                foundUpdatedEmployee.getId(),
-                foundUpdatedEmployee.getFirstName(),
-                foundUpdatedEmployee.getLastName(),
-                foundUpdatedEmployee.getPesel(),
-                foundUpdatedEmployee.getCreated());
+        String empl = gson.toJson(employee);
+
+        return gson.fromJson(empl, Employee.class);
     }
 
     @Override
@@ -149,7 +130,18 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         return employees.size();
     }
 
-    private void validatePesel(Long pesel) throws IllegalArgumentException {
+    @Override
+    public void validate(Employee model) {
+        if (isNull(model.getFirstName())
+                || model.getFirstName().length() == 0
+                || isNull(model.getLastName())
+                || model.getLastName().length() == 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public void validate(Long pesel) throws IllegalArgumentException {
         if (isNull(pesel)) {
             throw new IllegalArgumentException();
         }
@@ -191,7 +183,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     private Long returnPesel(Long pesel, Long newPesel) {
         try {
-            validatePesel(newPesel);
+            validate(newPesel);
             return newPesel;
         } catch (IllegalArgumentException ex) {
             return pesel;

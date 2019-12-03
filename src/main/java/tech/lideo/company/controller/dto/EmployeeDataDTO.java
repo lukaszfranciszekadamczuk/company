@@ -1,4 +1,4 @@
-package tech.lideo.company.model;
+package tech.lideo.company.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

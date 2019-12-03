@@ -24,8 +24,8 @@ public class EmployeeRepositoryImplTest {
 
     @Before
     public void setUp() throws EmployeeNotFoundException, EmployeeAlreadyExistsException {
-        repository.create("Jan", "Kowalski", 12345678910L);
-        repository.create("Marek", "Nowak", 10987654321L);
+        repository.create(new Employee("Jan", "Kowalski", 12345678910L));
+        repository.create(new Employee("Marek", "Nowak", 10987654321L));
     }
 
     @After
@@ -52,7 +52,7 @@ public class EmployeeRepositoryImplTest {
         Long pesel = 82113006812L;
 
         //when
-        Employee createdEmployee = repository.create(firstName, lastName, pesel);
+        Employee createdEmployee = repository.create(new Employee(firstName, lastName, pesel));
 
         //then
         assertEquals(firstName, createdEmployee.getFirstName());
@@ -69,7 +69,7 @@ public class EmployeeRepositoryImplTest {
         Long pesel = 12345678910L;
 
         //when
-        repository.create(firstName, lastName, pesel);
+        repository.create(new Employee(firstName, lastName, pesel));
 
         //then
     }
@@ -82,7 +82,7 @@ public class EmployeeRepositoryImplTest {
         Long pesel = null;
 
         //when
-        repository.create(firstName, lastName, pesel);
+        repository.create(new Employee(firstName, lastName, pesel));
 
         //then
     }
@@ -146,7 +146,7 @@ public class EmployeeRepositoryImplTest {
 
         //when
         Employee updatedEmployee = repository
-                .update(pesel, newFirstName, newLastName, newPesel);
+                .update(pesel, new Employee(newFirstName, newLastName, newPesel));
 
         //then
         assertEquals(savedEmployee.getId(), updatedEmployee.getId());
@@ -166,7 +166,7 @@ public class EmployeeRepositoryImplTest {
         Long newPesel = 33355577798L;
 
         //when
-        repository.update(pesel, newFirstName, newLastName, newPesel);
+        repository.update(pesel, new Employee(newFirstName, newLastName, newPesel));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -179,7 +179,7 @@ public class EmployeeRepositoryImplTest {
         Long newPesel = null;
 
         //when
-        repository.update(pesel, newFirstName, newLastName, newPesel);
+        repository.update(pesel, new Employee(newFirstName, newLastName, newPesel));
 
         //then
     }

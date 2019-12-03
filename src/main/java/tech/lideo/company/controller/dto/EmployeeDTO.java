@@ -1,19 +1,16 @@
-package tech.lideo.company.model;
+package tech.lideo.company.controller.dto;
 
-import java.util.List;
 import java.util.Objects;
 
 public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private Long pesel;
-    private List<EmployeeDataDTO> salary;
 
-    public EmployeeDTO(String firstName, String lastName, Long pesel, List<EmployeeDataDTO> salary) {
+    public EmployeeDTO(String firstName, String lastName, Long pesel) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pesel = pesel;
-        this.salary = salary;
     }
 
     public EmployeeDTO() {
@@ -26,13 +23,12 @@ public class EmployeeDTO {
         EmployeeDTO that = (EmployeeDTO) o;
         return Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(pesel, that.pesel) &&
-                Objects.equals(salary, that.salary);
+                Objects.equals(pesel, that.pesel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, pesel, salary);
+        return Objects.hash(firstName, lastName, pesel);
     }
 
     @Override
@@ -41,7 +37,6 @@ public class EmployeeDTO {
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", pesel=" + pesel +
-                ", salary=" + salary +
                 '}';
     }
 }
