@@ -8,7 +8,6 @@ import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.repository.EmployeeDataRepository;
 import tech.lideo.company.repository.EmployeeRepository;
 import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
-import tech.lideo.company.repository.exception.EmployeeDataNotFoundException;
 import tech.lideo.company.repository.exception.EmployeeNotFoundException;
 import tech.lideo.company.repository.exception.EmployeePeselException;
 
@@ -30,26 +29,33 @@ public class EmployeeService implements IEmployeeService {
     //    @Autowired
     private EmployeeDataRepository employeeDataRepository;
 
-    //    @Autowired
-    private EmployeeMapper employeeMapper = new EmployeeMapper();
-
 //    @Override
 //    public List<EmployeeDTO> findAll() {
 //        return employeeDTOList;
 //    }
 
+
     @Override
-    public EmployeeDTO create(EmployeeDTO dto) throws EmployeeDataNotFoundException, EmployeePeselException, EmployeeNotFoundException, EmployeeAlreadyExistsException {
+    public EmployeeDTO create(EmployeeDTO dto) throws EmployeePeselException, EmployeeNotFoundException, EmployeeAlreadyExistsException {
 
         Employee employee = employeeRepository.create(mapper.mapToModel(dto));
 
         return mapper.mapToDTO(employee);
+    }
 
 //        if (!employeeDTO.getPesel().equals(employeeDTO.getEmployeeId()))
 //            throw new EmployeeDataNotFoundException();
 //
 //        return mapperEmployee.getEmployeeDTO();
-    }
+
+//
+//    @Override
+//    public EmployeeDTO create() throws EmployeeDataNotFoundException {
+//        if (!employeeDTO.getPesel().equals(employeeDTO.getEmployeeId()))
+//            throw new EmployeeDataNotFoundException();
+//
+//        return mapperEmployee.getEmployeeDTO();
+//    }
 
 //    @Override
 //    public boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException {

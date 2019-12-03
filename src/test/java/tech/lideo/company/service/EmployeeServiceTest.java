@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 import tech.lideo.company.mapper.EmployeeMapper;
+
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
@@ -36,6 +37,7 @@ public class EmployeeServiceTest {
 //    @Autowired
     private EmployeeDTO employeeDTO;
     private EmployeeMapper employeeMapper;
+
 
     private Employee employee;
     private EmployeeData employeeData;
@@ -66,9 +68,13 @@ public class EmployeeServiceTest {
             EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
         employeeRepository.create(employee);
         employeeDataRepository.create(employeeData);
-
-        EmployeeDTO employeeDTO = new EmployeeMapper().getEmployeeDTO();
-        //when
+//
+//<<<<<<< HEAD
+//        EmployeeDTO employeeDTO = new EmployeeMapper().getEmployeeDTO();
+//=======
+//        EmployeeDTO employeeDTO = new MapperEmployee().getEmployeeDTO();
+//>>>>>>> origin/lukasz
+//        //when
 
         //then
         verify(employeeRepository, times(1)).create(any());
