@@ -6,11 +6,7 @@ import tech.lideo.company.model.EmployeeData;
 
 public class MapperEmployee {
 
-    public Employee employee;
-    public EmployeeData employeeData;
-
-    public EmployeeDTO getEmployeeDTO(){
-
+    public EmployeeDTO getEmployeeDTO(Employee employee, EmployeeData employeeData){
        return new EmployeeDTO(employee.getFirstName(),
                employee.getLastName(),
                employee.getPesel(),

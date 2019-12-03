@@ -68,7 +68,7 @@ public class EmployeeServiceTest {
         employeeRepository.create(employee);
         employeeDataRepository.create(employeeData);
 
-        EmployeeDTO employeeDTO = mapperEmployee.getEmployeeDTO();
+        EmployeeDTO employeeDTO = new MapperEmployee().getEmployeeDTO();
         //when
 
         //then
