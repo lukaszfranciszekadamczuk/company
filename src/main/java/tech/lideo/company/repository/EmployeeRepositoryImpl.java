@@ -23,7 +23,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public List<Employee> findAll() throws NoEmployeesException {
+    public List<Employee> findAll() {
         List<Employee> copiedList = new ArrayList<>();
 
         for (Employee e : employees) {
@@ -60,7 +60,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             throw new EmployeeAlreadyExistsException();
         }
 
-        employees.add(new Employee(model.getFirstName(), model.getLastName(), model.getPesel()));
+        employees.add(model);
 
         Employee employee = employees.stream()
                 .filter(e -> e.getPesel().equals(model.getPesel()))
@@ -126,7 +126,6 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     @Override
     public void clear() {
         employees.clear();
-
     }
 
     @Override

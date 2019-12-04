@@ -6,14 +6,12 @@ import java.util.UUID;
 
 public class EmployeeData {
     private UUID id;
-    private UUID employee_id;
     private Long pesel;
     private LocalDate date;
     private BigDecimal salary;
 
-    public EmployeeData(UUID id, UUID employee_id, Long pesel, LocalDate date, BigDecimal salary) {
-        this.id = id;
-        this.employee_id = employee_id;
+    public EmployeeData(Long pesel, LocalDate date, BigDecimal salary) {
+        this.id = UUID.randomUUID();
         this.pesel = pesel;
         this.date = date;
         this.salary = salary;
@@ -22,12 +20,15 @@ public class EmployeeData {
     public EmployeeData() {
     }
 
-    public UUID getId() {
-        return id;
+    public EmployeeData(UUID id, Long pesel, LocalDate date, BigDecimal salary) {
+        this.id = id;
+        this.pesel = pesel;
+        this.date = date;
+        this.salary = salary;
     }
 
-    public UUID getEmployee_id() {
-        return employee_id;
+    public UUID getId() {
+        return id;
     }
 
     public Long getPesel() {
