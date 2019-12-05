@@ -10,7 +10,7 @@
 //import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.test.context.junit4.SpringRunner;
 //import tech.lideo.company.model.Employee;
-//import tech.lideo.company.model.EmployeeDTO;
+//import tech.lideo.company.dto.EmployeeDTO;
 //import tech.lideo.company.model.EmployeeData;
 //import tech.lideo.company.repository.exception.*;
 //import tech.lideo.company.service.EmployeeService;

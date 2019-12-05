@@ -8,16 +8,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
+import tech.lideo.company.dto.EmployeeDTO;
 import tech.lideo.company.mapper.EmployeeMapper;
-
 import tech.lideo.company.model.Employee;
-import tech.lideo.company.model.EmployeeDTO;
 import tech.lideo.company.model.EmployeeData;
 import tech.lideo.company.repository.EmployeeDataRepository;
 import tech.lideo.company.repository.EmployeeRepository;
 import tech.lideo.company.repository.exception.*;
+import tech.lideo.company.service.exception.EmployeeIncompatibleWithEmployeeData;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -34,7 +35,7 @@ public class EmployeeServiceTest {
     @InjectMocks
     private EmployeeService employeeService;
 
-//    @Autowired
+
     private EmployeeDTO employeeDTO;
     private EmployeeMapper employeeMapper;
 
@@ -45,7 +46,8 @@ public class EmployeeServiceTest {
     @Before
     public void setUp() throws Exception {
         employee = new Employee("Jan", "Nowak", "55050544123");
-        employeeData = new EmployeeData("55050544123", new BigDecimal(100));
+        employeeData = new EmployeeData("55050544123", date(2019, 11, 12),
+                new BigDecimal(100));
 
     }
 
@@ -65,17 +67,14 @@ public class EmployeeServiceTest {
 
     @Test
     public void should_return_create_employee() throws EmployeePeselException, EmployeeNotFoundException,
-            EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException {
-        employeeRepository.create(employee);
-        employeeDataRepository.create(employeeData);
-//
-//<<<<<<< HEAD
-//        EmployeeDTO employeeDTO = new EmployeeMapper().getEmployeeDTO();
-//=======
-//        EmployeeDTO employeeDTO = new MapperEmployee().getEmployeeDTO();
-//>>>>>>> origin/lukasz
-//        //when
+            EmployeeAlreadyExistsException, EmployeeDataNotFoundException, EmployeAlreadyHaveSalaryForThisDayException,
+            EmployeeIncompatibleWithEmployeeData {
 
+        EmployeeDTO employeeDTO = new EmployeeDTO(employee.getFirstName(), employee.getLastName(),employee.getPesel(),
+                employeeData.getEmployeeId(), employeeData.getDate(), employeeData.getSalary());
+
+        //when
+        employeeService.create(employeeMapper.mapToDTO(employee, employeeData));
         //then
         verify(employeeRepository, times(1)).create(any());
     }
@@ -133,4 +132,8 @@ public class EmployeeServiceTest {
 //        verify(employeeRepository, times(1))
 //                .update(actualFirstName, actualLastName, actualPesel, newFirstName, newLastName, newPesel);
 //    }
+
+    private LocalDate date(int year, int month, int day) {
+        return LocalDate.of(year, month, day);
+    }
 }

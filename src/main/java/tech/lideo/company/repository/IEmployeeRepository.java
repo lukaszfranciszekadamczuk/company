@@ -16,8 +16,6 @@ public interface IEmployeeRepository {
      */
     List<Employee> findAll();
 
-    int employeeListSize();
-
     Employee create(Employee employee) throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException;
 
     boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
@@ -26,4 +24,12 @@ public interface IEmployeeRepository {
 
     Employee update(String actualFirstName, String actualLastName, String actualPesel, String newFirstName, String newLastName, String newPesel)
             throws EmployeeNotFoundException, MissingReqiredUpdateArgumentsException;
+
+    void clear();
+
+    int size();
+
+    void validate(Employee employee);
+
+    void validate(String pesel) throws EmployeePeselException;
 }

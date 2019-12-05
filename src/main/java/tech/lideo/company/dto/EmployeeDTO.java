@@ -1,4 +1,4 @@
-package tech.lideo.company.model;
+package tech.lideo.company.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,12 +8,15 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
-public class EmployeeData {
+public class EmployeeDTO {
 
-    @JsonProperty("id")
-    private UUID id;
+    @JsonProperty("firstName")
+    private String firstName;
+    @JsonProperty("lastName")
+    private String lastName;
+    @JsonProperty("pesel")
+    private String pesel;
     @JsonProperty("employeeId")
     private String employeeId;
     @JsonProperty("date")
@@ -23,19 +26,32 @@ public class EmployeeData {
     @JsonProperty("salary")
     private BigDecimal salary;
 
-    public EmployeeData(String employeeId, LocalDate date, BigDecimal salary) {
-        this.id = UUID.randomUUID();
+    public EmployeeDTO(String firstName, String lastName, String pesel,
+                       String employeeId, LocalDate date, BigDecimal salary) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.pesel = pesel;
         this.employeeId = employeeId;
         this.date = date;
         this.salary = salary;
     }
 
-    public EmployeeData() {
+    public EmployeeDTO() {
     }
 
-    @JsonProperty("id")
-    public UUID getId() {
-        return id;
+    @JsonProperty("firstName")
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @JsonProperty("lastName")
+    public String getLastName() {
+        return lastName;
+    }
+
+    @JsonProperty("pesel")
+    public String getPesel() {
+        return pesel;
     }
 
     @JsonProperty("employeeId")

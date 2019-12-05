@@ -47,7 +47,7 @@ public class EmployeeRepositoryTest {
         //when
         employeeRepository.create(employeeOne);
         employeeRepository.create(employeeTwo);
-        int listSize = employeeRepository.employeeListSize();
+        int listSize = employeeRepository.size();
 
         //then
         assertEquals(2, listSize);

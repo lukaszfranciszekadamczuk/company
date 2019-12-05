@@ -1,9 +1,9 @@
 package tech.lideo.company.controller;
 
+import tech.lideo.company.dto.EmployeeDTO;
 import tech.lideo.company.model.Employee;
-import tech.lideo.company.model.EmployeeDTO;
-import tech.lideo.company.model.EmployeeData;
 import tech.lideo.company.repository.exception.*;
+import tech.lideo.company.service.exception.EmployeeIncompatibleWithEmployeeData;
 
 import java.util.List;
 
@@ -15,7 +15,8 @@ public interface IEmployeeController {
 
     EmployeeDTO create(EmployeeDTO dto)
             throws EmployeeAlreadyExistsException, EmployeeNotFoundException,
-            EmployeePeselException, EmployeeDataNotFoundException, EmployeeDataAlreadyExistsException;
+            EmployeePeselException, EmployeeDataNotFoundException, EmployeAlreadyHaveSalaryForThisDayException,
+            EmployeeIncompatibleWithEmployeeData;
 
     boolean delete(String firstName, String lastName, String pesel) throws EmployeeNotFoundException;
 

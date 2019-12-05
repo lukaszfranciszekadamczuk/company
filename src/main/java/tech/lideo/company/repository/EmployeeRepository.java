@@ -1,5 +1,6 @@
 package tech.lideo.company.repository;
 
+import com.google.gson.Gson;
 import org.springframework.stereotype.Repository;
 import tech.lideo.company.model.Employee;
 import tech.lideo.company.repository.exception.EmployeeAlreadyExistsException;
@@ -9,7 +10,6 @@ import tech.lideo.company.repository.exception.MissingReqiredUpdateArgumentsExce
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -17,34 +17,27 @@ import static java.util.Objects.isNull;
 public class EmployeeRepository implements IEmployeeRepository {
 
     private List<Employee> employeeList = new ArrayList<>();
-    private List<Employee> employeeListCopy = new ArrayList<>();
+    private List<Employee> employeeCopyList = new ArrayList<>();
+    private Gson gson = new Gson();
+
     private String firstName;
     private String lastName;
     private String pesel;
 
     @Override
     public List<Employee> findAll() {
-        employeeListCopy = employeeList.stream()
-                .collect(Collectors.toList());
-        return employeeListCopy;
-    }
-
-    @Override
-    public int employeeListSize(){
-        return employeeListCopy.size();
+        for (Employee e : employeeList) {
+            String employeeToJson = gson.toJson(e);
+            employeeCopyList.add(gson.fromJson(employeeToJson, Employee.class));
+        }
+        return employeeCopyList;
     }
 
     @Override
     public Employee create(Employee employee)
             throws EmployeeAlreadyExistsException, EmployeeNotFoundException, EmployeePeselException {
-        if (isNull(employee.getFirstName()) || isNull(employee.getLastName()) || isNull(employee.getPesel()))
-            throw new IllegalArgumentException(
-                    "All employee data are required");
-
-        if (employee.getPesel().length() != 11)
-            throw new EmployeePeselException(
-                    "Employee pesel should have 11 characters"
-            );
+        validate(employee);
+        validate(employee.getPesel());
 
         boolean isEmployeeExist = employeeList.stream()
                 .anyMatch(e -> e.getPesel().equals(employee.getPesel()));
@@ -140,5 +133,31 @@ public class EmployeeRepository implements IEmployeeRepository {
                 .filter(e -> e.getPesel().equals(newUpdateEmployee.getPesel()))
                 .findFirst()
                 .orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    @Override
+    public void clear() {
+        employeeCopyList.clear();
+
+    }
+
+    @Override
+    public int size() {
+        return employeeCopyList.size();
+    }
+
+    @Override
+    public void validate(Employee employee) {
+        if (isNull(employee.getFirstName()) || isNull(employee.getLastName()) || isNull(employee.getPesel()))
+            throw new IllegalArgumentException(
+                    "All employee data are required");
+    }
+
+    @Override
+    public void validate(String pesel) throws EmployeePeselException {
+        if (pesel.length() != 11)
+            throw new EmployeePeselException(
+                    "Employee pesel should have 11 characters"
+            );
     }
 }
