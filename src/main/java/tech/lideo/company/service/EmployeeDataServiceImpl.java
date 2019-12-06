@@ -1,6 +1,7 @@
 package tech.lideo.company.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tech.lideo.company.dto.EmployeeDataDTO;
 import tech.lideo.company.repository.EmployeeDataRepository;
 import tech.lideo.company.service.mappers.EmployeeDataMapper;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class EmployeeDataServiceImpl implements EmployeeDataService {
 
     @Autowired
