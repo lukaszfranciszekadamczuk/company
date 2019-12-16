@@ -4,5 +4,5 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class EmployeeDataAlreadyExistsException extends Throwable {
+public class EmployeeDataAlreadyExistsException extends RuntimeException {
 }

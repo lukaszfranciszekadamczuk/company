@@ -1,10 +1,9 @@
 package tech.lideo.company.model;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
-public class Employee {
-    private UUID id;
+public class Employee implements Identifiable, Identifiable2 {
+    private Long id;
     private String firstName;
     private String lastName;
     private Long pesel;
@@ -13,15 +12,15 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Long pesel) {
-        this.id = UUID.randomUUID();
+    public Employee(Long id, String firstName, String lastName, Long pesel) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.pesel = pesel;
         this.created = LocalDate.now();
     }
 
-    public Employee(UUID id, String firstName, String lastName, Long pesel, LocalDate created) {
+    public Employee(Long id, String firstName, String lastName, Long pesel, LocalDate created) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,11 +28,11 @@ public class Employee {
         this.created = created;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 

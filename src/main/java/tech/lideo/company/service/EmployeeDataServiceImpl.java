@@ -15,41 +15,41 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeDataServiceImpl implements EmployeeDataService {
 
-    @Autowired
-    private EmployeeDataRepository repository;
-
-    @Autowired
-    private EmployeeDataMapper mapper;
-
-    @Override
-    public List<EmployeeDataDTO> findAll() {
-
-        return repository.findAll().stream()
-                .map(m -> mapper.mapToDTO(m))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public EmployeeDataDTO find(Long pesel, LocalDate date) throws EmployeeDataNotFoundException {
-
-        return mapper.mapToDTO(repository.find(pesel, date));
-    }
-
-    @Override
-    public EmployeeDataDTO create(EmployeeDataDTO dto) throws EmployeeDataAlreadyExistsException, EmployeeDataNotFoundException {
-
-        return mapper.mapToDTO(repository.create(mapper.mapToModel(dto)));
-    }
-
-    @Override
-    public String delete(Long pesel, LocalDate date) throws EmployeeDataNotFoundException {
-
-        return repository.delete(pesel, date);
-    }
-
-    @Override
-    public EmployeeDataDTO update(Long pesel, LocalDate date, EmployeeDataDTO dto) throws EmployeeDataNotFoundException {
-
-        return mapper.mapToDTO(repository.update(pesel, date, mapper.mapToModel(dto)));
-    }
+//    @Autowired
+//    private EmployeeDataRepository repository;
+//
+//    @Autowired
+//    private EmployeeDataMapper mapper;
+//
+//    @Override
+//    public List<EmployeeDataDTO> findAll() {
+//
+//        return repository.findAll().stream()
+//                .map(m -> mapper.mapToDTO(m))
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public EmployeeDataDTO find(Long pesel, LocalDate date) throws EmployeeDataNotFoundException {
+//
+//        return mapper.mapToDTO(repository.find(pesel, date));
+//    }
+//
+//    @Override
+//    public EmployeeDataDTO create(EmployeeDataDTO dto) throws EmployeeDataAlreadyExistsException, EmployeeDataNotFoundException {
+//
+//        return mapper.mapToDTO(repository.create(mapper.mapToModel(dto)));
+//    }
+//
+//    @Override
+//    public String delete(Long pesel, LocalDate date) throws EmployeeDataNotFoundException {
+//
+//        return repository.delete(pesel, date);
+//    }
+//
+//    @Override
+//    public EmployeeDataDTO update(Long pesel, LocalDate date, EmployeeDataDTO dto) throws EmployeeDataNotFoundException {
+//
+//        return mapper.mapToDTO(repository.update(pesel, date, mapper.mapToModel(dto)));
+//    }
 }
